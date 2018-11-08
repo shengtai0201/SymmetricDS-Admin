@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,20 +10,21 @@ using System.Threading.Tasks;
 namespace SymmetricDS.Admin.Tests
 {
     [TestFixture]
-    public class ConfigurationTests
+    public class InitializationTests
     {
         private Configuration masterNode;
         private Configuration client1Node;
         private Configuration client2Node;
         private Configuration client3Node;
+        private IInitialization initialization;
 
-        public ConfigurationTests()
+        public InitializationTests()
         {
             this.masterNode = new Configuration(Databases.SQLServer,
                 "localhost", "Test", "sa", "p@$$w0rd",
                 "8080", "sunserver", "000");
-            this.client1Node = new Configuration(this.masterNode, Databases.SQLServer, 
-                "10.40.9.20", "sun1", "sa", "1qaz2wsx", 
+            this.client1Node = new Configuration(this.masterNode, Databases.SQLServer,
+                "10.40.9.20", "sun1", "sa", "1qaz2wsx",
                 "7070", "sunclient", "001");
             this.client2Node = new Configuration(this.masterNode, Databases.SQLServer,
                 "10.40.9.20", "sun2", "sa", "1qaz2wsx",
@@ -30,6 +32,8 @@ namespace SymmetricDS.Admin.Tests
             this.client3Node = new Configuration(this.masterNode, Databases.Oracle,
                 "10.40.9.2", "XE", "apps", "apps",
                 "8888", "sunclient", "003");
+
+            this.initialization = new Initialization(masterNode);
         }
 
         [OneTimeTearDown]
@@ -39,46 +43,22 @@ namespace SymmetricDS.Admin.Tests
             this.client1Node = null;
             this.client2Node = null;
             this.client3Node = null;
+            this.initialization = null;
         }
 
         [Test]
-        public void MasterNodeCopyTo()
+        public void CreateTables()
         {
             string path = @"C:\Program Files\symmetric-server-3.9.15\";
 
-            bool condition = this.masterNode.CopyTo(path);
-
-            Assert.IsTrue(condition);
+            this.initialization.CreateTables(path, this.masterNode);
         }
 
         [Test]
-        public void MasterNodeWrite()
+        public void NodeGroup()
         {
-            string path = @"C:\Program Files\symmetric-server-3.9.15\";
 
-            bool condition = this.masterNode.Write(path);
-
-            Assert.IsTrue(condition);
-        }
-
-        [Test]
-        public void Client1NodeCopyTo()
-        {
-            string path = @"C:\Program Files\symmetric-server-3.9.15\";
-
-            bool condition = this.client1Node.CopyTo(path);
-
-            Assert.IsTrue(condition);
-        }
-
-        [Test]
-        public void Client1NodeWrite()
-        {
-            string path = @"C:\Program Files\symmetric-server-3.9.15\";
-
-            bool condition = this.client1Node.Write(path);
-
-            Assert.IsTrue(condition);
+            //this.initialization.NodeGroup(new KeyValuePair<string, string>("", ""), )
         }
     }
 }

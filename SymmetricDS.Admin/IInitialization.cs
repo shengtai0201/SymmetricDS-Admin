@@ -9,10 +9,10 @@ namespace SymmetricDS.Admin
     public interface IInitialization
     {
         // Step 1.對Database進行初始化
-        void Database();
+        void CreateTables(string path, IConfigurationProperty configuration);
 
         // Step 2.寫入Node Group
-        void NodeGroup();
+        bool NodeGroup(KeyValuePair<string, string> master, IDictionary<string, string> clients);
 
         // Step 3.設定Node Group之間的資料同步方式
         void SynchronizationMethod();

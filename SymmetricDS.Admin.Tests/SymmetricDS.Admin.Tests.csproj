@@ -48,10 +48,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationTests.cs" />
+    <Compile Include="InitializationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SymmetricDS.Admin\SymmetricDS.Admin.csproj">
+      <Project>{98f675e1-275a-4408-bc2f-803a4d293b2d}</Project>
+      <Name>SymmetricDS.Admin</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

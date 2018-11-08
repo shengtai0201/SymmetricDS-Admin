@@ -31,8 +31,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,9 +51,66 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="Databases.cs" />
+    <Compile Include="Data\Partial\SymDbContext.cs" />
+    <Compile Include="Data\SymDbContext.cs" />
+    <Compile Include="Data\sym_channel.cs" />
+    <Compile Include="Data\sym_conflict.cs" />
+    <Compile Include="Data\sym_context.cs" />
+    <Compile Include="Data\sym_data.cs" />
+    <Compile Include="Data\sym_data_event.cs" />
+    <Compile Include="Data\sym_data_gap.cs" />
+    <Compile Include="Data\sym_extension.cs" />
+    <Compile Include="Data\sym_extract_request.cs" />
+    <Compile Include="Data\sym_file_incoming.cs" />
+    <Compile Include="Data\sym_file_snapshot.cs" />
+    <Compile Include="Data\sym_file_trigger.cs" />
+    <Compile Include="Data\sym_file_trigger_router.cs" />
+    <Compile Include="Data\sym_grouplet.cs" />
+    <Compile Include="Data\sym_grouplet_link.cs" />
+    <Compile Include="Data\sym_incoming_batch.cs" />
+    <Compile Include="Data\sym_incoming_error.cs" />
+    <Compile Include="Data\sym_job.cs" />
+    <Compile Include="Data\sym_load_filter.cs" />
+    <Compile Include="Data\sym_lock.cs" />
+    <Compile Include="Data\sym_monitor.cs" />
+    <Compile Include="Data\sym_monitor_event.cs" />
+    <Compile Include="Data\sym_node.cs" />
+    <Compile Include="Data\sym_node_channel_ctl.cs" />
+    <Compile Include="Data\sym_node_communication.cs" />
+    <Compile Include="Data\sym_node_group.cs" />
+    <Compile Include="Data\sym_node_group_channel_wnd.cs" />
+    <Compile Include="Data\sym_node_group_link.cs" />
+    <Compile Include="Data\sym_node_host.cs" />
+    <Compile Include="Data\sym_node_host_channel_stats.cs" />
+    <Compile Include="Data\sym_node_host_job_stats.cs" />
+    <Compile Include="Data\sym_node_host_stats.cs" />
+    <Compile Include="Data\sym_node_identity.cs" />
+    <Compile Include="Data\sym_node_security.cs" />
+    <Compile Include="Data\sym_notification.cs" />
+    <Compile Include="Data\sym_outgoing_batch.cs" />
+    <Compile Include="Data\sym_parameter.cs" />
+    <Compile Include="Data\sym_registration_redirect.cs" />
+    <Compile Include="Data\sym_registration_request.cs" />
+    <Compile Include="Data\sym_router.cs" />
+    <Compile Include="Data\sym_sequence.cs" />
+    <Compile Include="Data\sym_table_reload_request.cs" />
+    <Compile Include="Data\sym_transform_column.cs" />
+    <Compile Include="Data\sym_transform_table.cs" />
+    <Compile Include="Data\sym_trigger.cs" />
+    <Compile Include="Data\sym_trigger_hist.cs" />
+    <Compile Include="Data\sym_trigger_router.cs" />
+    <Compile Include="Data\sym_trigger_router_grouplet.cs" />
+    <Compile Include="IConfiguration.cs" />
+    <Compile Include="IConfigurationProperty.cs" />
     <Compile Include="IInitialization.cs" />
+    <Compile Include="Initialization.cs" />
     <Compile Include="IStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

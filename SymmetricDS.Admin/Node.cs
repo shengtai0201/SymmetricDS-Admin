@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin
 {
-    public class Configuration : IConfiguration, IConfigurationProperty
+    public abstract class Node : INode, IConfiguration
     {
         public string EngineName { get; set; }
         public string DbDriver { get; set; }
@@ -16,7 +16,7 @@ namespace SymmetricDS.Admin
         public string DbPassword { get; set; }
         public string RegistrationUrl { get; set; }
         public string SyncUrl { get; set; }
-        public string GroupId { get; set; }
+        public NodeGroup Group { get; set; }
         public string ExternalId { get; set; }
         public int JobPurgePeriodTimeMs { get; set; }
         public int JobRoutingPeriodTimeMs { get; set; }
@@ -26,18 +26,18 @@ namespace SymmetricDS.Admin
 
         public string ConnectionString { get; set; }
 
-        public Configuration(Databases database, string dbHost, string db, string dbUser, string dbPassword,
-            string syncUrlPort, string groupId, string externalId,
+        public Node(Databases database, string dbHost, string db, string dbUser, string dbPassword,
+            string syncUrlPort, NodeGroup group, string externalId,
             int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
             int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true)
         {
-            this.EngineName = groupId + "-" + externalId;
+            this.EngineName = group.GroupId + "-" + externalId;
             this.DbDriver = this.GetDbDriver(database);
             this.DbUrl = this.GetDbUrl(database, dbHost, db);
             this.DbUser = dbUser;
             this.DbPassword = dbPassword;
             this.SyncUrl = string.Format("http://{0}:{1}/sync/{2}", dbHost, syncUrlPort, this.EngineName);
-            this.GroupId = groupId;
+            this.Group = group;
             this.ExternalId = externalId;
             this.JobPurgePeriodTimeMs = jobPurgePeriodTimeMs;
             this.JobRoutingPeriodTimeMs = jobRoutingPeriodTimeMs;
@@ -48,12 +48,12 @@ namespace SymmetricDS.Admin
             this.ConnectionString = this.GetConnectionString(database, dbHost, db);
         }
 
-        public Configuration(IConfigurationProperty masterNode,
+        public Node(IConfiguration masterNode,
             Databases database, string dbHost, string db, string dbUser, string dbPassword,
-            string syncUrlPort, string groupId, string externalId,
+            string syncUrlPort, NodeGroup group, string externalId,
             int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
             int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true) : this(database, dbHost, db, dbUser, dbPassword,
-                syncUrlPort, groupId, externalId,
+                syncUrlPort, group, externalId,
                 jobPurgePeriodTimeMs, jobRoutingPeriodTimeMs, jobPushPeriodTimeMs,
                 jobPullPeriodTimeMs, initialLoadCreateFirst)
         {
@@ -129,7 +129,7 @@ namespace SymmetricDS.Admin
                 this.ReadStartsWithReplace(ref contents, path, "db.password=", this.DbPassword);
                 this.ReadStartsWithReplace(ref contents, path, "registration.url=", this.RegistrationUrl);
                 this.ReadStartsWithReplace(ref contents, path, "sync.url=", this.SyncUrl);
-                this.ReadStartsWithReplace(ref contents, path, "group.id=", this.GroupId);
+                this.ReadStartsWithReplace(ref contents, path, "group.id=", this.Group.GroupId);
                 this.ReadStartsWithReplace(ref contents, path, "external.id=", this.ExternalId);
                 this.ReadStartsWithReplace(ref contents, path, "job.purge.period.time.ms=", this.JobPurgePeriodTimeMs);
                 this.ReadStartsWithReplace(ref contents, path, "job.routing.period.time.ms=", this.JobRoutingPeriodTimeMs);

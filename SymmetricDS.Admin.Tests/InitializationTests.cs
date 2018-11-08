@@ -12,24 +12,24 @@ namespace SymmetricDS.Admin.Tests
     [TestFixture]
     public class InitializationTests
     {
-        private Configuration masterNode;
-        private Configuration client1Node;
-        private Configuration client2Node;
-        private Configuration client3Node;
+        private Node masterNode;
+        private Node client1Node;
+        private Node client2Node;
+        private Node client3Node;
         private IInitialization initialization;
 
         public InitializationTests()
         {
-            this.masterNode = new Configuration(Databases.SQLServer,
+            this.masterNode = new Node(Databases.SQLServer,
                 "localhost", "Test", "sa", "p@$$w0rd",
                 "8080", "sunserver", "000");
-            this.client1Node = new Configuration(this.masterNode, Databases.SQLServer,
+            this.client1Node = new Node(this.masterNode, Databases.SQLServer,
                 "10.40.9.20", "sun1", "sa", "1qaz2wsx",
                 "7070", "sunclient", "001");
-            this.client2Node = new Configuration(this.masterNode, Databases.SQLServer,
+            this.client2Node = new Node(this.masterNode, Databases.SQLServer,
                 "10.40.9.20", "sun2", "sa", "1qaz2wsx",
                 "9090", "sunclient", "002");
-            this.client3Node = new Configuration(this.masterNode, Databases.Oracle,
+            this.client3Node = new Node(this.masterNode, Databases.Oracle,
                 "10.40.9.2", "XE", "apps", "apps",
                 "8888", "sunclient", "003");
 

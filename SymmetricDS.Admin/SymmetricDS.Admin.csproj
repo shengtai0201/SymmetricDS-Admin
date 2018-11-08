@@ -50,7 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
+    <Compile Include="Channel.cs" />
+    <Compile Include="ClientNode.cs" />
+    <Compile Include="IMaster.cs" />
+    <Compile Include="MasterNode.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Databases.cs" />
     <Compile Include="Data\Partial\SymDbContext.cs" />
     <Compile Include="Data\SymDbContext.cs" />
@@ -101,12 +105,14 @@
     <Compile Include="Data\sym_trigger_hist.cs" />
     <Compile Include="Data\sym_trigger_router.cs" />
     <Compile Include="Data\sym_trigger_router_grouplet.cs" />
+    <Compile Include="INode.cs" />
     <Compile Include="IConfiguration.cs" />
-    <Compile Include="IConfigurationProperty.cs" />
     <Compile Include="IInitialization.cs" />
     <Compile Include="Initialization.cs" />
     <Compile Include="IStart.cs" />
+    <Compile Include="NodeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

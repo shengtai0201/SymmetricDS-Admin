@@ -8,9 +8,19 @@ namespace SymmetricDS.Admin
 {
     public interface IConfiguration
     {
-        string ConnectionString { get; }
-
-        bool CopyTo(string path);
-        bool Write(string path);
+        string EngineName { get; }
+        string DbDriver { get; }
+        string DbUrl { get; }
+        string DbUser { get; }
+        string DbPassword { get; }
+        string RegistrationUrl { get; }
+        string SyncUrl { get; }
+        NodeGroup Group { get; }
+        string ExternalId { get; }
+        int JobPurgePeriodTimeMs { get; }
+        int JobRoutingPeriodTimeMs { get; }
+        int JobPushPeriodTimeMs { get; }
+        int JobPullPeriodTimeMs { get; }
+        bool InitialLoadCreateFirst { get; }
     }
 }

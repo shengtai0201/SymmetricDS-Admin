@@ -12,7 +12,7 @@ namespace SymmetricDS.Admin
     public class Initialization : IInitialization
     {
         private readonly SymDbContext dbContext;
-        public Initialization(IConfiguration configuration)
+        public Initialization(INode configuration)
         {
             this.dbContext = new SymDbContext(configuration.ConnectionString);
         }
@@ -22,7 +22,7 @@ namespace SymmetricDS.Admin
             throw new NotImplementedException();
         }
 
-        public void CreateTables(string path, IConfigurationProperty configuration)
+        public void CreateTables(string path, IConfiguration configuration)
         {
             string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
 

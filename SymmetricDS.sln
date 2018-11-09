@@ -3,12 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.WindowsFormsApp", "SymmetricDS.Admin.WindowsFormsApp\SymmetricDS.Admin.WindowsFormsApp.csproj", "{A03DB161-E274-48E8-8E36-FAB0C530DA76}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin", "SymmetricDS.Admin\SymmetricDS.Admin.csproj", "{98F675E1-275A-4408-BC2F-803A4D293B2D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9EA8E4F-5AC7-473A-9B43-4B54CA7C573D}"
 	ProjectSection(SolutionItems) = preProject
+		SymSQLServer.sql = SymSQLServer.sql
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
@@ -17,21 +16,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A03DB161-E274-48E8-8E36-FAB0C530DA76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A03DB161-E274-48E8-8E36-FAB0C530DA76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A03DB161-E274-48E8-8E36-FAB0C530DA76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A03DB161-E274-48E8-8E36-FAB0C530DA76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Debug|x86.Build.0 = Debug|Any CPU
 		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{98F675E1-275A-4408-BC2F-803A4D293B2D}.Release|x86.Build.0 = Release|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10320E23-14F1-4729-8C81-E356690FFFD3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{10320E23-14F1-4729-8C81-E356690FFFD3}.Debug|x86.Build.0 = Debug|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|x86.ActiveCfg = Release|Any CPU
+		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

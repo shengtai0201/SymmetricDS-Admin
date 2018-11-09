@@ -54,6 +54,55 @@
     <Compile Include="ClientNode.cs" />
     <Compile Include="IMaster.cs" />
     <Compile Include="MasterNode.cs" />
+    <Compile Include="Master\MasterDbContext.cs" />
+    <Compile Include="Master\Partial\MasterDbContext.cs" />
+    <Compile Include="Master\sym_channel.cs" />
+    <Compile Include="Master\sym_conflict.cs" />
+    <Compile Include="Master\sym_context.cs" />
+    <Compile Include="Master\sym_data.cs" />
+    <Compile Include="Master\sym_data_event.cs" />
+    <Compile Include="Master\sym_data_gap.cs" />
+    <Compile Include="Master\sym_extension.cs" />
+    <Compile Include="Master\sym_extract_request.cs" />
+    <Compile Include="Master\sym_file_incoming.cs" />
+    <Compile Include="Master\sym_file_snapshot.cs" />
+    <Compile Include="Master\sym_file_trigger.cs" />
+    <Compile Include="Master\sym_file_trigger_router.cs" />
+    <Compile Include="Master\sym_grouplet.cs" />
+    <Compile Include="Master\sym_grouplet_link.cs" />
+    <Compile Include="Master\sym_incoming_batch.cs" />
+    <Compile Include="Master\sym_incoming_error.cs" />
+    <Compile Include="Master\sym_job.cs" />
+    <Compile Include="Master\sym_load_filter.cs" />
+    <Compile Include="Master\sym_lock.cs" />
+    <Compile Include="Master\sym_monitor.cs" />
+    <Compile Include="Master\sym_monitor_event.cs" />
+    <Compile Include="Master\sym_node.cs" />
+    <Compile Include="Master\sym_node_channel_ctl.cs" />
+    <Compile Include="Master\sym_node_communication.cs" />
+    <Compile Include="Master\sym_node_group.cs" />
+    <Compile Include="Master\sym_node_group_channel_wnd.cs" />
+    <Compile Include="Master\sym_node_group_link.cs" />
+    <Compile Include="Master\sym_node_host.cs" />
+    <Compile Include="Master\sym_node_host_channel_stats.cs" />
+    <Compile Include="Master\sym_node_host_job_stats.cs" />
+    <Compile Include="Master\sym_node_host_stats.cs" />
+    <Compile Include="Master\sym_node_identity.cs" />
+    <Compile Include="Master\sym_node_security.cs" />
+    <Compile Include="Master\sym_notification.cs" />
+    <Compile Include="Master\sym_outgoing_batch.cs" />
+    <Compile Include="Master\sym_parameter.cs" />
+    <Compile Include="Master\sym_registration_redirect.cs" />
+    <Compile Include="Master\sym_registration_request.cs" />
+    <Compile Include="Master\sym_router.cs" />
+    <Compile Include="Master\sym_sequence.cs" />
+    <Compile Include="Master\sym_table_reload_request.cs" />
+    <Compile Include="Master\sym_transform_column.cs" />
+    <Compile Include="Master\sym_transform_table.cs" />
+    <Compile Include="Master\sym_trigger.cs" />
+    <Compile Include="Master\sym_trigger_hist.cs" />
+    <Compile Include="Master\sym_trigger_router.cs" />
+    <Compile Include="Master\sym_trigger_router_grouplet.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Databases.cs" />
     <Compile Include="Data\Partial\SymDbContext.cs" />
@@ -112,11 +161,22 @@
     <Compile Include="IStart.cs" />
     <Compile Include="NodeGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Router.cs" />
+    <Compile Include="Server\Channel.cs" />
+    <Compile Include="Server\Node.cs" />
+    <Compile Include="Server\NodeGroup.cs" />
+    <Compile Include="Server\Project.cs" />
+    <Compile Include="Server\Router.cs" />
+    <Compile Include="Server\ServerDbContext.cs" />
+    <Compile Include="Server\Trigger.cs" />
     <Compile Include="Trigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Server\Partial\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

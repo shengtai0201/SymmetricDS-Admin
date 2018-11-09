@@ -20,18 +20,18 @@ namespace SymmetricDS.Admin.Tests
 
         public InitializationTests()
         {
-            this.masterNode = new Node(Databases.SQLServer,
-                "localhost", "Test", "sa", "p@$$w0rd",
-                "8080", "sunserver", "000");
-            this.client1Node = new Node(this.masterNode, Databases.SQLServer,
-                "10.40.9.20", "sun1", "sa", "1qaz2wsx",
-                "7070", "sunclient", "001");
-            this.client2Node = new Node(this.masterNode, Databases.SQLServer,
-                "10.40.9.20", "sun2", "sa", "1qaz2wsx",
-                "9090", "sunclient", "002");
-            this.client3Node = new Node(this.masterNode, Databases.Oracle,
-                "10.40.9.2", "XE", "apps", "apps",
-                "8888", "sunclient", "003");
+            //this.masterNode = new Node(Databases.SQLServer,
+            //    "localhost", "Test", "sa", "p@$$w0rd",
+            //    "8080", "sunserver", "000");
+            //this.client1Node = new Node(this.masterNode, Databases.SQLServer,
+            //    "10.40.9.20", "sun1", "sa", "1qaz2wsx",
+            //    "7070", "sunclient", "001");
+            //this.client2Node = new Node(this.masterNode, Databases.SQLServer,
+            //    "10.40.9.20", "sun2", "sa", "1qaz2wsx",
+            //    "9090", "sunclient", "002");
+            //this.client3Node = new Node(this.masterNode, Databases.Oracle,
+            //    "10.40.9.2", "XE", "apps", "apps",
+            //    "8888", "sunclient", "003");
 
             this.initialization = new Initialization(masterNode);
         }

@@ -8,5 +8,7 @@ namespace SymmetricDS.Admin
 {
     public class Trigger
     {
+        public string TriggerId { get; set; }
+        public string SourceTableName { get; set; }
     }
 }

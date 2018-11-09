@@ -7,15 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin", "Symmet
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9EA8E4F-5AC7-473A-9B43-4B54CA7C573D}"
 	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
 		SymSQLServer.sql = SymSQLServer.sql
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.Tests", "SymmetricDS.Admin.Tests\SymmetricDS.Admin.Tests.csproj", "{10320E23-14F1-4729-8C81-E356690FFFD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.WebApplication", "SymmetricDS.Admin.WebApplication\SymmetricDS.Admin.WebApplication.csproj", "{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.WebApplication", "SymmetricDS.Admin.WebApplication\SymmetricDS.Admin.WebApplication.csproj", "{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.ConsoleApp", "SymmetricDS.Admin.ConsoleApp\SymmetricDS.Admin.ConsoleApp.csproj", "{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.ConsoleApp", "SymmetricDS.Admin.ConsoleApp\SymmetricDS.Admin.ConsoleApp.csproj", "{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -47,6 +47,8 @@ namespace SymmetricDS.Admin.Server
         [StringLength(50)]
         public string NodePassword { get; set; }
 
+        public int Version { get; set; }
+
         public virtual NodeGroup NodeGroup { get; set; }
     }
 }

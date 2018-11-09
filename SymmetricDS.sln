@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.Tests", "SymmetricDS.Admin.Tests\SymmetricDS.Admin.Tests.csproj", "{10320E23-14F1-4729-8C81-E356690FFFD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.WebApplication", "SymmetricDS.Admin.WebApplication\SymmetricDS.Admin.WebApplication.csproj", "{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.ConsoleApp", "SymmetricDS.Admin.ConsoleApp\SymmetricDS.Admin.ConsoleApp.csproj", "{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,22 @@ Global
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|x86.ActiveCfg = Release|Any CPU
 		{10320E23-14F1-4729-8C81-E356690FFFD3}.Release|x86.Build.0 = Release|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0D64C0D-C7F9-4E9C-AB57-08728DFACB67}.Release|x86.Build.0 = Release|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Debug|x86.Build.0 = Debug|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Release|x86.ActiveCfg = Release|Any CPU
+		{5ACBF70B-1525-4D2F-A0D7-6DFEF46AD962}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

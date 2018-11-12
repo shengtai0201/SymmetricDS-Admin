@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SymmetricDS.Admin
+{
+    public interface IStart
+    {
+        // Step 1.註冊Client Node
+        void Register();
+
+        // Step 2.啟動服務
+        void Start();
+    }
+}

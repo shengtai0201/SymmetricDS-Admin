@@ -1,1 +1,4 @@
 http://kenny-on-rails.blogspot.com/2015/05/symmetricds_28.html
+
+Scaffold-DbContext "Server=localhost;Database=Sym;User Id=sa;Password=p@$$w0rd;" Microsoft.EntityFrameworkCore.SqlServer -o Server -Context ServerDbContext
+Scaffold-DbContext "Server=localhost;Database=Sym;" Microsoft.EntityFrameworkCore.SqlServer -o Server -Context ServerDbContext

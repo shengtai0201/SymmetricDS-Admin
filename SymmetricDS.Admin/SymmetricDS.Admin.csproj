@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Master\Partial\" />
-    <Folder Include="Server\" />
     <Folder Include="WebApplication\Models\" />
   </ItemGroup>
 

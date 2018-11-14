@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Channel x Trigger";
+}
+@section Scripts {
+    <script>
+        function detailInitTrigger(e) {
+            var url = '/api/Triggers';
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'PUT'
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'DELETE'
+                    },
+                    create: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                    }
+                },
+                serverAggregates: true,
+                serverFiltering: true,
+                serverGrouping: true,
+                serverPaging: true,
+                serverSorting: true,
+                batch: false,
+                pageSize: 4,
+                error: loansky.kendo.defaultError,
+                filter: { field: "ChannelId", operator: "eq", value: e.data.Id },
+                schema: {
+                    data: 'DataCollection',
+                    total: 'TotalRowCount',
+                    model: {
+                        id: 'Id',
+                        fields: {
+                            Id: { type: 'number', editable: false, nullable: true },
+                            Channel: { type: 'object', editable: false, defaultValue: e.data },
+                            TriggerId: { validation: { required: true } },
+                            SourceTableName: { validation: { required: true }}
+                        }
+                    }
+                }
+            });
+
+            $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: dataSource,
+                pageable: { refresh: true },
+                height: new loansky().KendoGridHeight,
+                toolbar: [{ name: 'create', text: '新增 Trigger' }],
+                editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
+                columns: [
+                    {
+                        command: [
+                            { name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy' }
+                        ], title: "&nbsp;", width: "176px"
+                    },
+                    { field: 'TriggerId', title: '識別名稱', filterable: false },
+                    { field: 'SourceTableName', title: '同步資料表', filterable: false }
+                ]
+            });
+        }
+
+        $(document).ready(function () {
+            var url = '/api/Channels';
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'PUT'
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'DELETE'
+                    },
+                    create: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                    }
+                },
+                serverAggregates: true,
+                serverFiltering: true,
+                serverGrouping: true,
+                serverPaging: true,
+                serverSorting: true,
+                batch: false,
+                pageSize: 8,
+                error: loansky.kendo.defaultError,
+                schema: {
+                    data: 'DataCollection',
+                    total: 'TotalRowCount',
+                    model: {
+                        id: 'Id',
+                        fields: {
+                            Id: { type: 'number', editable: false, nullable: true },
+                            ChannelId: { validation: { required: true } },
+                            Description: { }
+                        }
+                    }
+                }
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                pageable: { refresh: true },
+                height: new loansky().KendoGridHeight,
+                toolbar: [{ name: 'create', text: '新增 Channel' }],
+                editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
+                detailInit: detailInitTrigger,
+                columns: [
+                    {
+                        command: [
+                            { name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy' }
+                        ], title: "&nbsp;", width: "176px"
+                    },
+                    { field: 'ChannelId', title: '識別名稱', filterable: false },
+                    { field: 'Description', title: '描述', filterable: false }
+                ]
+            });
+        });
+    </script>
+}
+<br />
+<div id="grid" />

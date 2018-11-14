@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Shengtai;
 using SymmetricDS.Admin.WebApplication.Models;
 
 namespace SymmetricDS.Admin.WebApplication.Controllers
@@ -39,5 +40,28 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        #region Project x GroupNode x Node
+        [HttpPost]
+        public IActionResult ReadDatabaseTypes()
+        {
+            var data = DefaultExtensions.GetEnumDictionary<Databases>();
+            return Json(data);
+        }
+
+        [HttpGet]
+        public IActionResult ProjectGroupNodes()
+        {
+            return View();
+        }
+        #endregion
+
+        #region Channel x Trigger
+        [HttpGet]
+        public IActionResult ChannelTriggers()
+        {
+            return View();
+        }
+        #endregion
     }
 }

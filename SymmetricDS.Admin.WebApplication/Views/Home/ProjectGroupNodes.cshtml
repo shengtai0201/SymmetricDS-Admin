@@ -1,0 +1,271 @@
+﻿@{
+    ViewData["Title"] = "Project x GroupNode x Node";
+}
+@section Scripts {
+    <script>
+        function databaseTypesEditor(container, options) {
+            $('<input name="DatabaseType" required data-text-field="Value" data-value-field="Key" data-bind="value:' + options.field + '" />')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    filter: "startswith",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: '/Home/ReadDatabaseTypes',
+                                dataType: 'json',
+                                type: 'POST'
+                            }
+                        }
+                    },
+                });
+        }
+
+        function detailInitNode(e) {
+            var url = '/api/Nodes';
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'PUT'
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'DELETE'
+                    },
+                    create: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                    }
+                },
+                serverAggregates: true,
+                serverFiltering: true,
+                serverGrouping: true,
+                serverPaging: true,
+                serverSorting: true,
+                batch: false,
+                pageSize: 2,
+                error: loansky.kendo.defaultError,
+                filter: { field: "NodeGroupId", operator: "eq", value: e.data.Id },
+                schema: {
+                    data: 'DataCollection',
+                    total: 'TotalRowCount',
+                    model: {
+                        id: 'Id',
+                        fields: {
+                            Id: { type: 'number', editable: false, nullable: true },
+                            NodeGroup: { type: 'object', editable: false, defaultValue: e.data },
+                            DatabaseType: { type: 'object', validation: { required: true } },
+                            DatabaseHost: { validation: { required: true } },
+                            DatabaseName: { validation: { required: true } },
+                            DatabaseUser: { validation: { required: true } },
+                            DatabasePassword: { validation: { required: true } },
+                            SyncUrlPort: { validation: { required: true } },
+                            ExternalId: { validation: { required: true } },
+                            JobPurgePeriodTimeMs: { type: 'number', defaultValue: 7200000 },
+                            JobRoutingPeriodTimeMs: { type: 'number', defaultValue: 5000 },
+                            JobPushPeriodTimeMs: { type: 'number', defaultValue: 10000 },
+                            JobPullPeriodTimeMs: { type: 'number', defaultValue: 10000 },
+                            InitialLoadCreateFirst: { type: 'boolean', defaultValue: true },
+                            NodePassword: { validation: { required: true } },
+                            Version: { type: 'number', defaultValue: 1 }
+                        }
+                    }
+                }
+            });
+
+            $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: dataSource,
+                pageable: { refresh: true },
+                height: new loansky().KendoGridHeight,
+                toolbar: [{ name: 'create', text: '新增 Node' }],
+                editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
+                columns: [
+                    {
+                        command: [
+                            { name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy' }
+                        ], title: "&nbsp;", width: "176px"
+                    },
+                    {
+                        field: 'DatabaseType', title: '資料庫類型', filterable: false, template: function (node) {
+                            if (node.DatabaseType)
+                                return node.DatabaseType.Value;
+                            else
+                                return '';
+                        }, editor: databaseTypesEditor
+                    },
+                    { field: 'DatabaseHost', title: '資料庫位址', filterable: false },
+                    { field: 'DatabaseName', title: '資料庫名稱', filterable: false },
+                    { field: 'DatabaseUser', title: '管理者帳號', filterable: false, hidden: true },
+                    { field: 'DatabasePassword', title: '管理者密碼', filterable: false, hidden: true },
+                    { field: 'SyncUrlPort', title: '資料同步的埠號', filterable: false },
+                    { field: 'ExternalId', title: '外部識別名稱', filterable: false },
+                    { field: 'JobPurgePeriodTimeMs', title: '清除期間', filterable: false, hidden: true, format: '{0:#}' },
+                    { field: 'JobRoutingPeriodTimeMs', title: '路由期間', filterable: false, hidden: true, format: '{0:#}' },
+                    { field: 'JobPushPeriodTimeMs', title: '推送期間', filterable: false, hidden: true, format: '{0:#}' },
+                    { field: 'JobPullPeriodTimeMs', title: '拉取期間', filterable: false, hidden: true, format: '{0:#}' },
+                    { field: 'InitialLoadCreateFirst', title: '首次創建初始化', filterable: false, hidden: true },
+                    { field: 'NodePassword', title: '節點密碼', filterable: false, hidden: true },
+                    { field: 'Version', title: '節點版本', filterable: false, format: '{0:#}' }
+                ]
+            });
+        }
+
+        function detailInitNodeGroup(e) {
+            var url = '/api/NodeGroups';
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'PUT'
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'DELETE'
+                    },
+                    create: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                    }
+                },
+                serverAggregates: true,
+                serverFiltering: true,
+                serverGrouping: true,
+                serverPaging: true,
+                serverSorting: true,
+                batch: false,
+                pageSize: 4,
+                error: loansky.kendo.defaultError,
+                filter: { field: "ProjectId", operator: "eq", value: e.data.Id },
+                schema: {
+                    data: 'DataCollection',
+                    total: 'TotalRowCount',
+                    model: {
+                        id: 'Id',
+                        fields: {
+                            Id: { type: 'number', editable: false, nullable: true },
+                            Project: { type: 'object', editable: false, defaultValue: e.data },
+                            NodeGroupId: { validation: { required: true } },
+                            Description: {}
+                        }
+                    }
+                }
+            });
+
+            $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: dataSource,
+                pageable: { refresh: true },
+                height: new loansky().KendoGridHeight,
+                toolbar: [{ name: 'create', text: '新增 Node Group' }],
+                editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
+                detailInit: detailInitNode,
+                columns: [
+                    {
+                        command: [
+                            { name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy' }
+                        ], title: "&nbsp;", width: "176px"
+                    },
+                    { field: 'NodeGroupId', title: '識別名稱', filterable: false },
+                    { field: 'Description', title: '描述', filterable: false }
+                ]
+            });
+        }
+
+        $(document).ready(function () {
+            var url = '/api/Projects';
+            var dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'GET'
+                    },
+                    update: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'PUT'
+                    },
+                    destroy: {
+                        url: function (data) {
+                            return url + '?key=' + data.Id;
+                        },
+                        dataType: 'json',
+                        type: 'DELETE'
+                    },
+                    create: {
+                        url: url,
+                        dataType: 'json',
+                        type: 'POST',
+                    }
+                },
+                serverAggregates: true,
+                serverFiltering: true,
+                serverGrouping: true,
+                serverPaging: true,
+                serverSorting: true,
+                batch: false,
+                pageSize: 8,
+                error: loansky.kendo.defaultError,
+                schema: {
+                    data: 'DataCollection',
+                    total: 'TotalRowCount',
+                    model: {
+                        id: 'Id',
+                        fields: {
+                            Id: { type: 'number', editable: false, nullable: true },
+                            Name: { validation: { required: true } }
+                        }
+                    }
+                }
+            });
+
+            $("#grid").kendoGrid({
+                dataSource: dataSource,
+                pageable: { refresh: true },
+                height: new loansky().KendoGridHeight,
+                toolbar: [{ name: 'create', text: '新增專案' }],
+                editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
+                detailInit: detailInitNodeGroup,
+                columns: [
+                    {
+                        command: [
+                            { name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy' }
+                        ], title: "&nbsp;", width: "176px"
+                    },
+                    { field: 'Name', title: '名稱', filterable: false }
+                ]
+            });
+        });
+    </script>
+}
+<br />
+<div id="grid" />

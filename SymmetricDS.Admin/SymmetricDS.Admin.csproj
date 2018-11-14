@@ -7,7 +7,6 @@
   <ItemGroup>
     <Compile Remove="Channel.cs" />
     <Compile Remove="ClientNode.cs" />
-    <Compile Remove="Databases.cs" />
     <Compile Remove="IConfiguration.cs" />
     <Compile Remove="IInitialization.cs" />
     <Compile Remove="IMaster.cs" />
@@ -20,14 +19,10 @@
     <Compile Remove="NodeGroup.cs" />
     <Compile Remove="Router.cs" />
     <Compile Remove="Trigger.cs" />
-    <Compile Remove="WebApplication\Models\NodeGroupViewModel.cs" />
-    <Compile Remove="WebApplication\Models\NodeViewModel.cs" />
-    <Compile Remove="WebApplication\Models\ProjectViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Master\Partial\" />
-    <Folder Include="WebApplication\Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +33,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClassLibrary\ShengtaiCore\ShengtaiCore2x.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shengtai;
 using Shengtai.Options;
@@ -15,7 +16,11 @@ namespace SymmetricDS.Admin.Server.Service
 {
     public class RouterService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, RouterViewModel, Router>
     {
-        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        private readonly ILogger<RouterService> logger;
+        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<RouterService> logger) : base(options.Value, dbContext)
+        {
+            this.logger = logger;
+        }
 
         public async Task<bool> CreateAsync(RouterViewModel model, IDataSource dataSource)
         {
@@ -23,8 +28,8 @@ namespace SymmetricDS.Admin.Server.Service
             {
                 RouterId = model.RouterId,
                 ProjectId = model.Project.Id.Value,
-                SourceNodeGroupId = model.SourceNodeGroup.Id,
-                TargetNodeGroupId = model.TargetNodeGroup.Id
+                SourceNodeGroupId = model.SourceNodeGroup.Id.Value,
+                TargetNodeGroupId = model.TargetNodeGroup.Id.Value
             };
             await this.DbContext.Router.AddAsync(router);
 
@@ -35,7 +40,10 @@ namespace SymmetricDS.Admin.Server.Service
                 model.Id = router.Id;
                 result = true;
             }
-            catch { }
+            catch(Exception e)
+            {
+                this.logger.LogCritical(e.Message);
+            }
 
             return result;
         }
@@ -92,6 +100,7 @@ namespace SymmetricDS.Admin.Server.Service
                 return null;
 
             router.RouterId = model.RouterId;
+            router.ProjectId = model.Project.Id.Value;
             router.SourceNodeGroupId = model.SourceNodeGroup.Id.Value;
             router.TargetNodeGroupId = model.TargetNodeGroup.Id.Value;
 

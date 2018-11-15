@@ -58,13 +58,19 @@ namespace SymmetricDS.Admin.Server.Service
             return result;
         }
 
-        public ICollection<NodeGroupViewModel> Read(int projectId)
+        public ICollection<NodeGroupViewModel> Read(IFilterInfoCollection serverFiltering)
         {
             ICollection<NodeGroupViewModel> nodeGroups = new List<NodeGroupViewModel>();
 
-            var dataCollection = this.DbContext.NodeGroup.Include("Project").Where(ng => ng.ProjectId == projectId).Select(ng => ng).ToList();
-            foreach (var data in dataCollection)
-                nodeGroups.Add(NodeGroupViewModel.NewInstance(data).Build(data));
+            if (serverFiltering != null)
+            {
+                var filter = serverFiltering.FilterCollection.SingleOrDefault(f => f.Field == "Id");
+                int projectId = Convert.ToInt32(filter.Value);
+
+                var dataCollection = this.DbContext.NodeGroup.Include("Project").Where(ng => ng.ProjectId == projectId).Select(ng => ng).ToList();
+                foreach (var data in dataCollection)
+                    nodeGroups.Add(NodeGroupViewModel.NewInstance(data).Build(data));
+            }
 
             return nodeGroups;
         }

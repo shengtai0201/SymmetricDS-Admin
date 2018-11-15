@@ -7,8 +7,8 @@ using System.Text;
 
 namespace SymmetricDS.Admin.Server
 {
-    public interface INodeGroupService
+    public interface ITriggerService
     {
-        ICollection<NodeGroupViewModel> Read(IFilterInfoCollection serverFiltering);
+        ICollection<TriggerViewModel> Read(IFilterInfoCollection serverFiltering);
     }
 }

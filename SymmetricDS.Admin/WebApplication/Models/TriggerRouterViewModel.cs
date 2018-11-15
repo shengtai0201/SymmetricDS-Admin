@@ -27,30 +27,17 @@ namespace SymmetricDS.Admin.WebApplication.Models
             }
         }
 
-        private ChannelViewModel channel;
-        public ChannelViewModel Channel
-        {
-            get
-            {
-                if (this.channel == null)
-                    this.channel = this.Trigger.Channel;
-
-                return this.channel;
-            }
-            set
-            {
-                this.channel = value;
-            }
-        }
-        public TriggerViewModel Trigger { get; set; }
-
         public RouterViewModel Router { get; set; }
+
+        public ChannelViewModel Channel { get; set; }
+        public TriggerViewModel Trigger { get; set; }
 
         public override TriggerRouterViewModel Build(TriggerRouter entity)
         {
-            this.Trigger = TriggerViewModel.NewInstance(entity.Trigger).Build(entity.Trigger);
-            this.Channel = this.Trigger.Channel;
             this.Router = RouterViewModel.NewInstance(entity.Router).Build(entity.Router);
+
+            this.Channel = ChannelViewModel.NewInstance(entity.Trigger.Channel).Build(entity.Trigger.Channel);
+            this.Trigger = TriggerViewModel.NewInstance(entity.Trigger).Build(entity.Trigger);
 
             return this;
         }

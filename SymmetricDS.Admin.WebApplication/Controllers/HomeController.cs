@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Shengtai;
+using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.Server;
 using SymmetricDS.Admin.WebApplication.Models;
 
@@ -14,11 +15,15 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
     {
         private readonly IProjectService projectService;
         private readonly INodeGroupService nodeGroupService;
+        private readonly IChannelService channelService;
+        private readonly ITriggerService triggerService;
 
-        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService)
+        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService, IChannelService channelService, ITriggerService triggerService)
         {
             this.projectService = projectService;
             this.nodeGroupService = nodeGroupService;
+            this.channelService = channelService;
+            this.triggerService = triggerService;
         }
 
         public IActionResult Index()
@@ -78,14 +83,14 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         [HttpPost]
         public IActionResult ReadChannels()
         {
-            var data = new List<ChannelViewModel>();
+            var data = this.channelService.Read();
             return Json(data);
         }
 
         [HttpPost]
-        public IActionResult ReadTriggers()
+        public IActionResult ReadTriggers([ModelBinder] DataSourceRequest request)
         {
-            var data = new List<TriggerViewModel>();
+            var data = this.triggerService.Read(request.ServerFiltering);
             return Json(data);
         }
 
@@ -97,9 +102,9 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult ReadNodeGroups(int projectId)
+        public IActionResult ReadNodeGroups([ModelBinder] DataSourceRequest request)
         {
-            var data = this.nodeGroupService.Read(projectId);
+            var data = this.nodeGroupService.Read(request.ServerFiltering);
             return Json(data);
         }
 

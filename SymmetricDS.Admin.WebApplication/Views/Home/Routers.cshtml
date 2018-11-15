@@ -3,12 +3,12 @@
 }
 @section Scripts {
     <script>
-        function triggerEditor(container, options) {
-            $('<input name="Channel" data-text-field="ChannelId" data-value-field="Id" data-bind="value:' + options.field + '" />')
+        function channelEditor(container, options) {
+            $('<input name="Channel" id="Channel" data-text-field="ChannelId" data-value-field="Id" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
-                    autoBind: false,
-                    filter: "startswith",
+                    dataTextField: "ChannelId",
+                    dataValueField: "Id",
                     dataSource: {
                         transport: {
                             read: {
@@ -19,12 +19,18 @@
                         }
                     },
                 });
-            $('<input name="Trigger" data-text-field="TriggerId" data-value-field="Id" data-bind="value:' + options.field + '" />')
+        }
+
+        function triggerEditor(container, options) {
+            $('<input name="Trigger" id="Trigger" data-text-field="TriggerId" data-value-field="Id" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
                     autoBind: false,
-                    filter: "startswith",
+                    cascadeFrom: "Channel",
+                    dataTextField: "TriggerId",
+                    dataValueField: "Id",
                     dataSource: {
+                        serverFiltering: true,
                         transport: {
                             read: {
                                 url: '/Home/ReadTriggers',
@@ -37,16 +43,12 @@
         }
 
         function projectEditor(container, options) {
-            $('<input name="Project" data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '" />')
+            $('<input name="Project" id="Project" data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
-                    cascade: function () {
-                        var router = options.model;
-                        debugger;
-                    },
-                    autoBind: false,
+                    dataTextField: "Name",
+                    dataValueField: "Id",
                     dataSource: {
-                        serverFiltering: true,
                         transport: {
                             read: {
                                 url: '/Home/ReadProjects',
@@ -58,15 +60,14 @@
                 });
         }
 
-        function sourceNodeGroupEditor(container, options) {
-            $('<input name="SourceNodeGroup" data-text-field="NodeGroupId" data-value-field="Id" data-bind="value:' + options.field + '" />')
+        function nodeGroupEditor(container, options) {
+            $('<input name="' + options.field + '" id="' + options.field + '" data-text-field="NodeGroupId" data-value-field="Id" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
-                    cascade: function () {
-                        alert('SourceNodeGroup');
-                    },
                     autoBind: false,
                     cascadeFrom: "Project",
+                    dataTextField: "NodeGroupId",
+                    dataValueField: "Id",
                     dataSource: {
                         serverFiltering: true,
                         transport: {
@@ -89,13 +90,13 @@
                         dataType: 'json',
                         type: 'GET'
                     },
-                    update: {
-                        url: function (data) {
-                            return url + '?key=' + data.Id;
-                        },
-                        dataType: 'json',
-                        type: 'PUT'
-                    },
+                    //update: {
+                    //    url: function (data) {
+                    //        return url + '?key=' + data.Id;
+                    //    },
+                    //    dataType: 'json',
+                    //    type: 'PUT'
+                    //},
                     destroy: {
                         url: function (data) {
                             return url + '?key=' + data.Id;
@@ -137,30 +138,30 @@
                 dataSource: dataSource,
                 pageable: { refresh: true },
                 height: new loansky().KendoGridHeight,
-                toolbar: [{ name: 'create', text: '新增 Trigger' }],
+                toolbar: [{ name: 'create', text: '加入 Trigger' }],
                 editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
                 columns: [
                     {
                         command: [
-                            { name: 'edit', text: { update: '存檔' } },
-                            { name: 'destroy' }
+                            //{ name: 'edit', text: { update: '存檔' } },
+                            { name: 'destroy', text: '移除' }
                         ], title: "&nbsp;", width: "176px"
                     },
                     {
-                        field: 'Trigger', title: '識別名稱', filterable: false, template: function (triggerRouter) {
+                        field: 'Channel', title: '路線', filterable: false, template: function (triggerRouter) {
+                            if (triggerRouter.Channel)
+                                return triggerRouter.Channel.ChannelId;
+                            else
+                                return '';
+                        }, editor: channelEditor
+                    },
+                    {
+                        field: 'Trigger', title: '觸發', filterable: false, template: function (triggerRouter) {
                             if (triggerRouter.Trigger)
                                 return triggerRouter.Trigger.TriggerId;
                             else
                                 return '';
                         }, editor: triggerEditor
-                    },
-                    {
-                        field: 'Trigger', title: '同步資料表', filterable: false, template: function (triggerRouter) {
-                            if (triggerRouter.Trigger)
-                                return triggerRouter.Trigger.SourceTableName;
-                            else
-                                return '';
-                        }
                     }
                 ]
             });
@@ -242,7 +243,7 @@
                             { name: 'destroy' }
                         ], title: "&nbsp;", width: "176px"
                     },
-                    { field: 'ChannelId', title: '識別名稱', filterable: false },
+                    { field: 'RouterId', title: '識別名稱', filterable: false },
                     {
                         field: 'Project', title: '專案', filterable: false, template: function (router) {
                             if (router.Project)
@@ -257,9 +258,16 @@
                                 return router.SourceNodeGroup.NodeGroupId;
                             else
                                 return '';
-                        }, editor: sourceNodeGroupEditor
+                        }, editor: nodeGroupEditor
                     },
-                    { field: 'TargetNodeGroup', title: '目的', filterable: false }
+                    {
+                        field: 'TargetNodeGroup', title: '目的', filterable: false, template: function (router) {
+                            if (router.TargetNodeGroup)
+                                return router.TargetNodeGroup.NodeGroupId;
+                            else
+                                return '';
+                        }, editor: nodeGroupEditor
+                    }
                 ]
             });
         });

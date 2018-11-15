@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shengtai;
 using Shengtai.Options;
@@ -15,7 +16,11 @@ namespace SymmetricDS.Admin.Server.Service
 {
     public class TriggerRouterService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<string, TriggerRouterViewModel, TriggerRouter>
     {
-        public TriggerRouterService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        private readonly ILogger<TriggerRouterService> logger;
+        public TriggerRouterService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<TriggerRouterService> logger) : base(options.Value, dbContext)
+        {
+            this.logger = logger;
+        }
 
         public async Task<bool> CreateAsync(TriggerRouterViewModel model, IDataSource dataSource)
         {
@@ -68,7 +73,10 @@ namespace SymmetricDS.Admin.Server.Service
 
         public Task<IDataSourceResponse<TriggerRouterViewModel>> ReadAsync(DataSourceRequest request)
         {
-            var responseData = this.DbContext.TriggerRouter.Include("Project").Select(tr => tr);
+            var responseData = this.DbContext.TriggerRouter
+                .Include("Router").Include("Router.Project").Include("Router.SourceNodeGroup").Include("Router.SourceNodeGroup.Project").Include("Router.TargetNodeGroup").Include("Router.TargetNodeGroup.Project")
+                .Include("Trigger").Include("Trigger.Channel")
+                .Select(tr => tr);
 
             if (request.ServerFiltering != null)
             {
@@ -92,24 +100,9 @@ namespace SymmetricDS.Admin.Server.Service
             return Task.FromResult(response);
         }
 
-        public async Task<bool?> UpdateAsync(string key, TriggerRouterViewModel model, IDataSource dataSource)
+        public Task<bool?> UpdateAsync(string key, TriggerRouterViewModel model, IDataSource dataSource)
         {
-            var triggerRouter = await this.ReadAsync(key);
-            if (triggerRouter == null)
-                return null;
-
-            triggerRouter.TriggerId = model.Trigger.Id.Value;
-            triggerRouter.RouterId = model.Router.Id.Value;
-
-            bool result = false;
-            try
-            {
-                await this.DbContext.SaveChangesAsync();
-                result = true;
-            }
-            catch { }
-
-            return result;
+            throw new NotImplementedException();
         }
     }
 }

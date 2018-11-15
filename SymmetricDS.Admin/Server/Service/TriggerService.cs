@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class TriggerService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, TriggerViewModel, Trigger>
+    public class TriggerService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, TriggerViewModel, Trigger>, ITriggerService
     {
         public TriggerService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
 
@@ -58,6 +58,23 @@ namespace SymmetricDS.Admin.Server.Service
             return result;
         }
 
+        public ICollection<TriggerViewModel> Read(IFilterInfoCollection serverFiltering)
+        {
+            ICollection<TriggerViewModel> triggers = new List<TriggerViewModel>();
+
+            if(serverFiltering != null)
+            {
+                var filter = serverFiltering.FilterCollection.SingleOrDefault(f => f.Field == "Id");
+                int channelId = Convert.ToInt32(filter.Value);
+
+                var dataCollection = this.DbContext.Trigger.Include("Channel").Where(t => t.ChannelId == channelId).Select(t => t).ToList();
+                foreach (var data in dataCollection)
+                    triggers.Add(TriggerViewModel.NewInstance(data).Build(data));
+            }
+
+            return triggers;
+        }
+
         public async Task<Trigger> ReadAsync(int key)
         {
             return await this.DbContext.Trigger.SingleOrDefaultAsync(p => p.Id == key);
@@ -65,7 +82,7 @@ namespace SymmetricDS.Admin.Server.Service
 
         public Task<IDataSourceResponse<TriggerViewModel>> ReadAsync(DataSourceRequest request)
         {
-            var responseData = this.DbContext.Trigger.Select(t => t);
+            var responseData = this.DbContext.Trigger.Include("Channel").Select(t => t);
 
             if (request.ServerFiltering != null)
             {

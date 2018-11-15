@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ChannelService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ChannelViewModel, Channel>
+    public class ChannelService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ChannelViewModel, Channel>, IChannelService
     {
         public ChannelService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
 
@@ -55,6 +55,17 @@ namespace SymmetricDS.Admin.Server.Service
             catch { }
 
             return result;
+        }
+
+        public ICollection<ChannelViewModel> Read()
+        {
+            ICollection<ChannelViewModel> channels = new List<ChannelViewModel>();
+
+            var dataCollection = this.DbContext.Channel.Select(c => c).ToList();
+            foreach (var data in dataCollection)
+                channels.Add(ChannelViewModel.NewInstance(data).Build(data));
+
+            return channels;
         }
 
         public async Task<Channel> ReadAsync(int key)

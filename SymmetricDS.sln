@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9EA8E4F-5AC7-473A-9B43-4B54CA7C573D}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		SymPostgreSQL.sql = SymPostgreSQL.sql
 		SymSQLServer.sql = SymSQLServer.sql
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
@@ -16,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShengtaiCore2x", "..\ClassL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.WebApplication", "SymmetricDS.Admin.WebApplication\SymmetricDS.Admin.WebApplication.csproj", "{0EA6E0C3-89FB-4F5A-850C-E6C915308340}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.Data", "SymmetricDS.Admin.Data\SymmetricDS.Admin.Data.csproj", "{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.Data", "SymmetricDS.Admin.Data\SymmetricDS.Admin.Data.csproj", "{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

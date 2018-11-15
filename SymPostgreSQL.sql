@@ -51,8 +51,8 @@ CREATE TABLE "Router" (
 "Id" serial4 NOT NULL,
 "ProjectId" int4 NOT NULL,
 "RouterId" varchar(50) NOT NULL,
-"SourceNodeGroupId" int4,
-"TargetNodeGroupId" int4,
+"SourceNodeGroupId" int4 NOT NULL,
+"TargetNodeGroupId" int4 NOT NULL,
 PRIMARY KEY ("Id") ,
 CONSTRAINT "UQ__Router__6C9DDD0BCF6FFE85" UNIQUE ("RouterId")
 )
@@ -62,7 +62,7 @@ CREATE TABLE "Trigger" (
 "Id" serial4 NOT NULL,
 "ChannelId" int4 NOT NULL,
 "TriggerId" varchar(128) NOT NULL,
-"SourceTableName" varchar(255),
+"SourceTableName" varchar(255) NOT NULL,
 PRIMARY KEY ("Id") ,
 UNIQUE ("ChannelId", "TriggerId")
 )
@@ -78,8 +78,8 @@ WITHOUT OIDS;
 
 ALTER TABLE "Node" ADD CONSTRAINT "FK__Node__NodeGroupI__5629CD9C" FOREIGN KEY ("NodeGroupId") REFERENCES "NodeGroup" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "NodeGroup" ADD CONSTRAINT "FK__NodeGroup__Proje__5441852A" FOREIGN KEY ("ProjectId") REFERENCES "Project" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
-ALTER TABLE "Router" ADD CONSTRAINT "FK__Router__SourceNo__5812160E" FOREIGN KEY ("SourceNodeGroupId") REFERENCES "NodeGroup" ("Id") ON DELETE SET NULL ON UPDATE NO ACTION;
-ALTER TABLE "Router" ADD CONSTRAINT "FK__Router__TargetNo__59063A47" FOREIGN KEY ("TargetNodeGroupId") REFERENCES "NodeGroup" ("Id") ON DELETE SET NULL ON UPDATE NO ACTION;
+ALTER TABLE "Router" ADD CONSTRAINT "FK__Router__SourceNo__5812160E" FOREIGN KEY ("SourceNodeGroupId") REFERENCES "NodeGroup" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "Router" ADD CONSTRAINT "FK__Router__TargetNo__59063A47" FOREIGN KEY ("TargetNodeGroupId") REFERENCES "NodeGroup" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "Trigger" ADD CONSTRAINT "FK__Trigger__Channel__571DF1D5" FOREIGN KEY ("ChannelId") REFERENCES "Channel" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "TriggerRouter" ADD CONSTRAINT "FK__TriggerRo__Trigg__59FA5E80" FOREIGN KEY ("TriggerId") REFERENCES "Trigger" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "TriggerRouter" ADD CONSTRAINT "FK__TriggerRo__Route__5AEE82B9" FOREIGN KEY ("RouterId") REFERENCES "Router" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;

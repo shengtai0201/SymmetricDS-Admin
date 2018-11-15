@@ -8,11 +8,13 @@ namespace SymmetricDS.Admin.Server
         public Project()
         {
             NodeGroup = new HashSet<NodeGroup>();
+            Router = new HashSet<Router>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
 
         public ICollection<NodeGroup> NodeGroup { get; set; }
+        public ICollection<Router> Router { get; set; }
     }
 }

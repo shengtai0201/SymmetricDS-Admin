@@ -23,14 +23,13 @@ namespace SymmetricDS.Admin.Server
         public virtual DbSet<Trigger> Trigger { get; set; }
         public virtual DbSet<TriggerRouter> TriggerRouter { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=Sym;Username=postgres;port=5432");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=Sym;Username=postgres;port=5432");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -121,6 +120,11 @@ namespace SymmetricDS.Admin.Server
                 entity.Property(e => e.RouterId)
                     .IsRequired()
                     .HasMaxLength(50);
+
+                entity.HasOne(d => d.Project)
+                    .WithMany(p => p.Router)
+                    .HasForeignKey(d => d.ProjectId)
+                    .HasConstraintName("Router_ProjectId_fkey");
 
                 entity.HasOne(d => d.SourceNodeGroup)
                     .WithMany(p => p.RouterSourceNodeGroup)

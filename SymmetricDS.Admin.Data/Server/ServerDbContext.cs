@@ -23,13 +23,13 @@ namespace SymmetricDS.Admin.Server
         public virtual DbSet<Trigger> Trigger { get; set; }
         public virtual DbSet<TriggerRouter> TriggerRouter { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=Sym;Username=postgres;port=5432");
-            }
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=Sym;Username=postgres;port=5432");
+        //    }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -145,7 +145,7 @@ namespace SymmetricDS.Admin.Server
                     .HasName("Trigger_ChannelId_TriggerId_key")
                     .IsUnique();
 
-                entity.Property(e => e.SourceTableName).HasMaxLength(255);
+                entity.Property(e => e.SourceTableName).IsRequired().HasMaxLength(255);
 
                 entity.Property(e => e.TriggerId)
                     .IsRequired()

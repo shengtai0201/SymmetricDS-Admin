@@ -36,8 +36,8 @@
                 });
         }
 
-        function sourceProjectEditor(container, options) {
-            $('<input name="SourceProject" data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '" />')
+        function projectEditor(container, options) {
+            $('<input name="Project" data-text-field="Name" data-value-field="Id" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
                     cascade: function () {
@@ -66,7 +66,7 @@
                         alert('SourceNodeGroup');
                     },
                     autoBind: false,
-                    cascadeFrom: "SourceProject",
+                    cascadeFrom: "Project",
                     dataSource: {
                         serverFiltering: true,
                         transport: {
@@ -211,9 +211,8 @@
                         fields: {
                             Id: { type: 'number', editable: false, nullable: true },
                             RouterId: { validation: { required: true } },
-                            SourceProject: { type: 'object' },
+                            Project: { type: 'object', validation: { required: true } },
                             SourceNodeGroup: { type: 'object', validation: { required: true } },
-                            TargetProject: { type: 'object' },
                             TargetNodeGroup: { type: 'object', validation: { required: true } }
                         }
                     }
@@ -245,12 +244,12 @@
                     },
                     { field: 'ChannelId', title: '識別名稱', filterable: false },
                     {
-                        field: 'SourceProject', title: '來源專案', filterable: false, template: function (router) {
-                            if (router.SourceProject)
-                                return router.SourceProject.Name;
+                        field: 'Project', title: '專案', filterable: false, template: function (router) {
+                            if (router.Project)
+                                return router.Project.Name;
                             else
                                 return '';
-                        }, editor: sourceProjectEditor, hidden: true
+                        }, editor: projectEditor, hidden: true
                     },
                     {
                         field: 'SourceNodeGroup', title: '來源', filterable: false, template: function (router) {
@@ -260,7 +259,6 @@
                                 return '';
                         }, editor: sourceNodeGroupEditor
                     },
-                    { field: 'TargetProject', title: '目的專案', filterable: false },
                     { field: 'TargetNodeGroup', title: '目的', filterable: false }
                 ]
             });

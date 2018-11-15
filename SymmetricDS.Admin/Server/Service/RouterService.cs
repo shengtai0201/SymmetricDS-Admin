@@ -22,6 +22,7 @@ namespace SymmetricDS.Admin.Server.Service
             var router = new Router
             {
                 RouterId = model.RouterId,
+                ProjectId = model.Project.Id.Value,
                 SourceNodeGroupId = model.SourceNodeGroup.Id,
                 TargetNodeGroupId = model.TargetNodeGroup.Id
             };
@@ -65,7 +66,7 @@ namespace SymmetricDS.Admin.Server.Service
 
         public Task<IDataSourceResponse<RouterViewModel>> ReadAsync(DataSourceRequest request)
         {
-            var responseData = this.DbContext.Router.Include("SourceNodeGroup").Include("TargetNodeGroup").Select(r => r);
+            var responseData = this.DbContext.Router.Include("Project").Include("SourceNodeGroup").Include("TargetNodeGroup").Select(r => r);
 
             if (request.ServerFiltering != null) { }
 

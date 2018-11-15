@@ -3,7 +3,7 @@
 }
 @section Scripts {
     <script>
-        function detailInitTrigger(e) {
+        function detailInit(e) {
             var url = '/api/Triggers';
             var dataSource = new kendo.data.DataSource({
                 transport: {
@@ -132,7 +132,7 @@
                 height: new loansky().KendoGridHeight,
                 toolbar: [{ name: 'create', text: '新增 Channel' }],
                 editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
-                detailInit: detailInitTrigger,
+                detailInit: detailInit,
                 columns: [
                     {
                         command: [

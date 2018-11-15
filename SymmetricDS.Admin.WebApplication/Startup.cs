@@ -39,7 +39,7 @@ namespace SymmetricDS.Admin.WebApplication
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             var assemblyName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddDbContext<ServerDbContext>(options => 
+            services.AddDbContext<ServerDbContext>(options =>
                 options.UseNpgsql(connectionString, o => o.MigrationsAssembly(assemblyName)));
 
             services.AddMvc()
@@ -48,9 +48,13 @@ namespace SymmetricDS.Admin.WebApplication
 
             services.AddOptions().Configure<AppSettings>(this.Configuration);
 
-            services.AddScoped<IApiService<int, ProjectViewModel, Project>, ProjectService>();
-            services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup>, NodeGroupService>();
+            services.AddScoped<IApiService<int, ProjectViewModel, Project>, ProjectService>().AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();
             services.AddScoped<IApiService<int, NodeViewModel, Node>, NodeService>();
+            services.AddScoped<IApiService<int, ChannelViewModel, Channel>, ChannelService>();
+            services.AddScoped<IApiService<int, TriggerViewModel, Trigger>, TriggerService>();
+            services.AddScoped<IApiService<int, RouterViewModel, Router>, RouterService>();
+            services.AddScoped<IApiService<string, TriggerRouterViewModel, TriggerRouter>, TriggerRouterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

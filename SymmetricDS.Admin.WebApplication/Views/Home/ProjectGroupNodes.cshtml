@@ -3,7 +3,7 @@
 }
 @section Scripts {
     <script>
-        function databaseTypesEditor(container, options) {
+        function databaseTypeEditor(container, options) {
             $('<input name="DatabaseType" required data-text-field="Value" data-value-field="Key" data-bind="value:' + options.field + '" />')
                 .appendTo(container)
                 .kendoDropDownList({
@@ -105,7 +105,7 @@
                                 return node.DatabaseType.Value;
                             else
                                 return '';
-                        }, editor: databaseTypesEditor
+                        }, editor: databaseTypeEditor
                     },
                     { field: 'DatabaseHost', title: '資料庫位址', filterable: false },
                     { field: 'DatabaseName', title: '資料庫名稱', filterable: false },

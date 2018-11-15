@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ClassLibrary\ShengtaiCore\ShengtaiCore2x.csproj" />
+    <ProjectReference Include="..\SymmetricDS.Admin.Data\SymmetricDS.Admin.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,8 +12,8 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ChannelsController : ApiController<int, ChannelViewModel, Channel>
+    public class TriggerRoutersController : ApiController<string, TriggerRouterViewModel, TriggerRouter>
     {
-        public ChannelsController(IApiService<int, ChannelViewModel, Channel> service) : base(service) { }
+        public TriggerRoutersController(IApiService<string, TriggerRouterViewModel, TriggerRouter> service) : base(service) { }
     }
 }

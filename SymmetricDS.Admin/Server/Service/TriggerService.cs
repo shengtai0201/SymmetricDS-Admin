@@ -25,6 +25,7 @@ namespace SymmetricDS.Admin.Server.Service
                 TriggerId = model.TriggerId,
                 SourceTableName = model.SourceTableName
             };
+            await this.DbContext.Trigger.AddAsync(trigger);
 
             bool result = false;
             try

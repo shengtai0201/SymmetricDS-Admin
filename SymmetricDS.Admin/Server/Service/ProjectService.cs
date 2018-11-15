@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ProjectService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ProjectViewModel, Project>
+    public class ProjectService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ProjectViewModel, Project>, IProjectService
     {
         private readonly ILogger<NodeService> logger;
         public ProjectService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<NodeService> logger) : base(options.Value, dbContext)
@@ -85,6 +85,17 @@ namespace SymmetricDS.Admin.Server.Service
                 response.DataCollection.Add(ProjectViewModel.NewInstance(data).Build(data));
 
             return Task.FromResult(response);
+        }
+
+        public ICollection<ProjectViewModel> Read()
+        {
+            ICollection<ProjectViewModel> projects = new List<ProjectViewModel>();
+
+           var dataCollection = this.DbContext.Project.Select(p => p).ToList();
+            foreach (var data in dataCollection)
+                projects.Add(ProjectViewModel.NewInstance(data).Build(data));
+
+            return projects;
         }
 
         public async Task<bool?> UpdateAsync(int key, ProjectViewModel model, IDataSource dataSource)

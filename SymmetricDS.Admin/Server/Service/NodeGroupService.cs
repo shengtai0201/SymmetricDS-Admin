@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class NodeGroupService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, NodeGroupViewModel, NodeGroup>
+    public class NodeGroupService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, NodeGroupViewModel, NodeGroup>, INodeGroupService
     {
         public NodeGroupService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
 
@@ -56,6 +56,17 @@ namespace SymmetricDS.Admin.Server.Service
             catch { }
 
             return result;
+        }
+
+        public ICollection<NodeGroupViewModel> Read(int projectId)
+        {
+            ICollection<NodeGroupViewModel> nodeGroups = new List<NodeGroupViewModel>();
+
+            var dataCollection = this.DbContext.NodeGroup.Include("Project").Where(ng => ng.ProjectId == projectId).Select(ng => ng).ToList();
+            foreach (var data in dataCollection)
+                nodeGroups.Add(NodeGroupViewModel.NewInstance(data).Build(data));
+
+            return nodeGroups;
         }
 
         public async Task<NodeGroup> ReadAsync(int key)

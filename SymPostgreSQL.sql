@@ -10,7 +10,7 @@ WITHOUT OIDS;
 CREATE TABLE "Node" (
 "Id" serial4 NOT NULL,
 "NodeGroupId" int4 NOT NULL,
-"DatabaseType" int4,
+"DatabaseType" int4 NOT NULL,
 "DatabaseHost" varchar(16),
 "DatabaseName" varchar(16),
 "DatabaseUser" varchar(16),
@@ -49,6 +49,7 @@ WITHOUT OIDS;
 
 CREATE TABLE "Router" (
 "Id" serial4 NOT NULL,
+"ProjectId" int4 NOT NULL,
 "RouterId" varchar(50) NOT NULL,
 "SourceNodeGroupId" int4,
 "TargetNodeGroupId" int4,
@@ -82,4 +83,5 @@ ALTER TABLE "Router" ADD CONSTRAINT "FK__Router__TargetNo__59063A47" FOREIGN KEY
 ALTER TABLE "Trigger" ADD CONSTRAINT "FK__Trigger__Channel__571DF1D5" FOREIGN KEY ("ChannelId") REFERENCES "Channel" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "TriggerRouter" ADD CONSTRAINT "FK__TriggerRo__Trigg__59FA5E80" FOREIGN KEY ("TriggerId") REFERENCES "Trigger" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
 ALTER TABLE "TriggerRouter" ADD CONSTRAINT "FK__TriggerRo__Route__5AEE82B9" FOREIGN KEY ("RouterId") REFERENCES "Router" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "Router" ADD FOREIGN KEY ("ProjectId") REFERENCES "Project" ("Id") ON DELETE CASCADE;
 

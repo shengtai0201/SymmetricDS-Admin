@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SymmetricDS.Admin.Data.Server
+namespace SymmetricDS.Admin.Server
 {
     public partial class Channel
     {

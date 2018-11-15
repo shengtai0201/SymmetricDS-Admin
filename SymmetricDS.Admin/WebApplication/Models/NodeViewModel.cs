@@ -2,6 +2,7 @@
 using SymmetricDS.Admin.Server;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
 {
     public class NodeViewModel : ViewModel<int, NodeViewModel, Node>
     {
+        [Key]
         public int? Id { get; set; }
 
         public NodeGroupViewModel NodeGroup { get; set; }

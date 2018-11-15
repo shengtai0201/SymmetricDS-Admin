@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SymmetricDS.Admin.Data.Server
+namespace SymmetricDS.Admin.Server
 {
     public partial class Node
     {
         public int Id { get; set; }
         public int NodeGroupId { get; set; }
-        public int? DatabaseType { get; set; }
         public string DatabaseHost { get; set; }
         public string DatabaseName { get; set; }
         public string DatabaseUser { get; set; }

@@ -13,24 +13,25 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ChannelService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ChannelViewModel, Channel>
+    public class RouterService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, RouterViewModel, Router>
     {
-        public ChannelService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
 
-        public async Task<bool> CreateAsync(ChannelViewModel model, IDataSource dataSource)
+        public async Task<bool> CreateAsync(RouterViewModel model, IDataSource dataSource)
         {
-            var channel = new Channel
+            var router = new Router
             {
-                ChannelId = model.ChannelId,
-                Description = model.Description
+                RouterId = model.RouterId,
+                SourceNodeGroupId = model.SourceNodeGroup.Id,
+                TargetNodeGroupId = model.TargetNodeGroup.Id
             };
-            await this.DbContext.Channel.AddAsync(channel);
+            await this.DbContext.Router.AddAsync(router);
 
             bool result = false;
             try
             {
                 await this.DbContext.SaveChangesAsync();
-                model.Id = channel.Id;
+                model.Id = router.Id;
                 result = true;
             }
             catch { }
@@ -40,11 +41,11 @@ namespace SymmetricDS.Admin.Server.Service
 
         public async Task<bool?> DestroyAsync(int key)
         {
-            var channel = await this.ReadAsync(key);
-            if (channel == null)
+            var router = await this.ReadAsync(key);
+            if (router == null)
                 return null;
 
-            this.DbContext.Channel.Remove(channel);
+            this.DbContext.Router.Remove(router);
 
             bool result = false;
             try
@@ -57,18 +58,18 @@ namespace SymmetricDS.Admin.Server.Service
             return result;
         }
 
-        public async Task<Channel> ReadAsync(int key)
+        public async Task<Router> ReadAsync(int key)
         {
-            return await this.DbContext.Channel.SingleOrDefaultAsync(p => p.Id == key);
+            return await this.DbContext.Router.SingleOrDefaultAsync(r => r.Id == key);
         }
 
-        public Task<IDataSourceResponse<ChannelViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<RouterViewModel>> ReadAsync(DataSourceRequest request)
         {
-            var responseData = this.DbContext.Channel.Select(c => c);
+            var responseData = this.DbContext.Router.Include("SourceNodeGroup").Include("TargetNodeGroup").Select(r => r);
 
             if (request.ServerFiltering != null) { }
 
-            IDataSourceResponse<ChannelViewModel> response = new DataSourceResponse<ChannelViewModel> { TotalRowCount = responseData.Count() };
+            IDataSourceResponse<RouterViewModel> response = new DataSourceResponse<RouterViewModel> { TotalRowCount = responseData.Count() };
 
             if (request.ServerPaging != null)
             {
@@ -78,19 +79,20 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(ChannelViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(RouterViewModel.NewInstance(data).Build(data));
 
             return Task.FromResult(response);
         }
 
-        public async Task<bool?> UpdateAsync(int key, ChannelViewModel model, IDataSource dataSource)
+        public async Task<bool?> UpdateAsync(int key, RouterViewModel model, IDataSource dataSource)
         {
-            var channel = await this.ReadAsync(key);
-            if (channel == null)
+            var router = await this.ReadAsync(key);
+            if (router == null)
                 return null;
 
-            channel.ChannelId = model.ChannelId;
-            channel.Description = model.Description;
+            router.RouterId = model.RouterId;
+            router.SourceNodeGroupId = model.SourceNodeGroup.Id.Value;
+            router.TargetNodeGroupId = model.TargetNodeGroup.Id.Value;
 
             bool result = false;
             try

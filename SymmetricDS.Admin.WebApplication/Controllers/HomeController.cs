@@ -15,13 +15,16 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
     {
         private readonly IProjectService projectService;
         private readonly INodeGroupService nodeGroupService;
+        private readonly INodeService nodeService;
         private readonly IChannelService channelService;
         private readonly ITriggerService triggerService;
 
-        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService, IChannelService channelService, ITriggerService triggerService)
+        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService, INodeService nodeService, 
+            IChannelService channelService, ITriggerService triggerService)
         {
             this.projectService = projectService;
             this.nodeGroupService = nodeGroupService;
+            this.nodeService = nodeService;
             this.channelService = channelService;
             this.triggerService = triggerService;
         }
@@ -105,6 +108,13 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         public IActionResult ReadNodeGroups([ModelBinder] DataSourceRequest request)
         {
             var data = this.nodeGroupService.Read(request.ServerFiltering);
+            return Json(data);
+        }
+
+        [HttpPost]
+        public IActionResult ReadNodes([ModelBinder] DataSourceRequest request)
+        {
+            var data = this.nodeService.Read(request.ServerFiltering);
             return Json(data);
         }
 

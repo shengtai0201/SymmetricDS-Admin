@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class NodeService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, NodeViewModel, Node>
+    public class NodeService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, NodeViewModel, Node>, INodeService
     {
         private readonly ILogger<NodeService> logger;
         public NodeService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<NodeService> logger) : base(options.Value, dbContext)
@@ -78,6 +78,23 @@ namespace SymmetricDS.Admin.Server.Service
             catch { }
 
             return result;
+        }
+
+        public ICollection<NodeViewModel> Read(IFilterInfoCollection serverFiltering)
+        {
+            ICollection<NodeViewModel> nodes = new List<NodeViewModel>();
+
+            if (serverFiltering != null)
+            {
+                var filter = serverFiltering.FilterCollection.SingleOrDefault(f => f.Field == "Id");
+                int nodeGroupId = Convert.ToInt32(filter.Value);
+
+                var dataCollection = this.DbContext.Node.Include("NodeGroup").Where(n => n.NodeGroupId == nodeGroupId).Select(n => n).ToList();
+                foreach (var data in dataCollection)
+                    nodes.Add(NodeViewModel.NewInstance(data));
+            }
+
+            return nodes;
         }
 
         public async Task<Node> ReadAsync(int key)

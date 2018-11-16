@@ -31,9 +31,6 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             this.Version = node.Version;
 
-
-            this.IsMaster = router != null;
-
             this.GroupId = node.NodeGroup.NodeGroupId;
             this.EngineName = this.GroupId + "-" + node.ExternalId;
             this.DbDriver = this.GetDbDriver(database);
@@ -49,9 +46,9 @@ namespace SymmetricDS.Admin.ConsoleApp
             this.InitialLoadCreateFirst = node.InitialLoadCreateFirst;
 
             var projectId = node.NodeGroup.ProjectId;
-            var router = node.NodeGroup.RouterTargetNodeGroup.SingleOrDefault(x => x.ProjectId == projectId);
-            if(router == null)
-                this.RegistrationUrl
+            //var router = node.NodeGroup.RouterTargetNodeGroup.SingleOrDefault(x => x.ProjectId == projectId);
+            //if(router == null)
+            //    this.RegistrationUrl
 
         }
 
@@ -158,7 +155,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 this.ReadStartsWithReplace(ref contents, path, "db.password=", this.DbPassword);
                 this.ReadStartsWithReplace(ref contents, path, "registration.url=", this.RegistrationUrl);
                 this.ReadStartsWithReplace(ref contents, path, "sync.url=", this.SyncUrl);
-                this.ReadStartsWithReplace(ref contents, path, "group.id=", this.Group.GroupId);
+                //this.ReadStartsWithReplace(ref contents, path, "group.id=", this.Group.GroupId);
                 this.ReadStartsWithReplace(ref contents, path, "external.id=", this.ExternalId);
                 this.ReadStartsWithReplace(ref contents, path, "job.purge.period.time.ms=", this.JobPurgePeriodTimeMs);
                 this.ReadStartsWithReplace(ref contents, path, "job.routing.period.time.ms=", this.JobRoutingPeriodTimeMs);

@@ -15,14 +15,18 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public string RouterId { get; set; }
 
         public ProjectViewModel Project { get; set; }
+
         public NodeGroupViewModel SourceNodeGroup { get; set; }
+
         public NodeGroupViewModel TargetNodeGroup { get; set; }
+        public NodeViewModel TargetNode { get; set; }
 
         protected override RouterViewModel Build(Router entity)
         {
             this.Project = ProjectViewModel.NewInstance(entity.Project);
             this.SourceNodeGroup = NodeGroupViewModel.NewInstance(entity.SourceNodeGroup);
-            this.TargetNodeGroup = NodeGroupViewModel.NewInstance(entity.TargetNodeGroup);
+            this.TargetNodeGroup = NodeGroupViewModel.NewInstance(entity.TargetNode.NodeGroup);
+            this.TargetNode = NodeViewModel.NewInstance(entity.TargetNode);
 
             return this;
         }

@@ -50,7 +50,7 @@ namespace SymmetricDS.Admin.WebApplication
 
             services.AddScoped<IApiService<int, ProjectViewModel, Project>, ProjectService>().AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();
-            services.AddScoped<IApiService<int, NodeViewModel, Node>, NodeService>();
+            services.AddScoped<IApiService<int, NodeViewModel, Node>, NodeService>().AddScoped<INodeService, NodeService>();
             services.AddScoped<IApiService<int, ChannelViewModel, Channel>, ChannelService>().AddScoped<IChannelService, ChannelService>();
             services.AddScoped<IApiService<int, TriggerViewModel, Trigger>, TriggerService>().AddScoped<ITriggerService, TriggerService>();
             services.AddScoped<IApiService<int, RouterViewModel, Router>, RouterService>();

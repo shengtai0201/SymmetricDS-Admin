@@ -81,6 +81,27 @@
                 });
         }
 
+        function nodeEditor(container, options) {
+            $('<input name="' + options.field + '" id="' + options.field + '" data-text-field="ExternalId" data-value-field="Id" data-bind="value:' + options.field + '" />')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    cascadeFrom: "TargetNodeGroup",
+                    dataTextField: "ExternalId",
+                    dataValueField: "Id",
+                    dataSource: {
+                        serverFiltering: true,
+                        transport: {
+                            read: {
+                                url: '/Home/ReadNodes',
+                                dataType: 'json',
+                                type: 'POST'
+                            }
+                        }
+                    },
+                });
+        }
+
         function detailInit(e) {
             var url = '/api/TriggerRouters';
             var dataSource = new kendo.data.DataSource({
@@ -136,7 +157,6 @@
                 columns: [
                     {
                         command: [
-                            //{ name: 'edit', text: { update: '存檔' } },
                             { name: 'destroy', text: '移除' }
                         ], title: "&nbsp;", width: "176px"
                     },
@@ -207,7 +227,8 @@
                             RouterId: { validation: { required: true } },
                             Project: { type: 'object', validation: { required: true } },
                             SourceNodeGroup: { type: 'object', validation: { required: true } },
-                            TargetNodeGroup: { type: 'object', validation: { required: true } }
+                            TargetNodeGroup: { type: 'object', validation: { required: true } },
+                            TargetNode: { type: 'object', validation: { required: true } }
                         }
                     }
                 }
@@ -220,15 +241,6 @@
                 toolbar: [{ name: 'create', text: '新增 Router' }],
                 editable: { mode: 'popup', confirmation: '您確定要刪除這筆資料嗎？' },
                 detailInit: detailInit,
-                //edit: function (e) {
-                //    var viewModel = e.model;
-                //    if (!viewModel.isNew()) {
-                //        //var litigationGroup = e.container.find("input[name=LitigationGroup]").data("kendoDropDownList");
-                //        //litigationGroup.open();
-                //        //litigationGroup.toggle();
-                //        //litigationType = e.container.find("input[name=LitigationType]").data("kendoDropDownList");
-                //    }
-                //},
                 columns: [
                     {
                         command: [
@@ -246,7 +258,7 @@
                         }, editor: projectEditor, hidden: true
                     },
                     {
-                        field: 'SourceNodeGroup', title: '來源', filterable: false, template: function (router) {
+                        field: 'SourceNodeGroup', title: '來源群組', filterable: false, template: function (router) {
                             if (router.SourceNodeGroup)
                                 return router.SourceNodeGroup.NodeGroupId;
                             else
@@ -254,12 +266,20 @@
                         }, editor: nodeGroupEditor
                     },
                     {
-                        field: 'TargetNodeGroup', title: '目的', filterable: false, template: function (router) {
+                        field: 'TargetNodeGroup', title: '目的群組', filterable: false, template: function (router) {
                             if (router.TargetNodeGroup)
                                 return router.TargetNodeGroup.NodeGroupId;
                             else
                                 return '';
-                        }, editor: nodeGroupEditor
+                        }, editor: nodeGroupEditor, hidden: true
+                    },
+                    {
+                        field: 'TargetNode', title: '目的', filterable: false, template: function (router) {
+                            if (router.TargetNode)
+                                return router.TargetNode.ExternalId;
+                            else
+                                return '';
+                        }, editor: nodeEditor
                     }
                 ]
             });

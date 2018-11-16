@@ -8,6 +8,7 @@
     <Compile Remove="Channel.cs" />
     <Compile Remove="ClientNode.cs" />
     <Compile Remove="ConsoleApp\NodeGroup.cs" />
+    <Compile Remove="ConsoleApp\Router.cs" />
     <Compile Remove="IConfiguration.cs" />
     <Compile Remove="IInitialization.cs" />
     <Compile Remove="IMaster.cs" />

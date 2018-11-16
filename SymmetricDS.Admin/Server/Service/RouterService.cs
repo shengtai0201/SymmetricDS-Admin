@@ -29,7 +29,7 @@ namespace SymmetricDS.Admin.Server.Service
                 RouterId = model.RouterId,
                 ProjectId = model.Project.Id.Value,
                 SourceNodeGroupId = model.SourceNodeGroup.Id.Value,
-                TargetNodeGroupId = model.TargetNodeGroup.Id.Value
+                TargetNodeId = model.TargetNode.Id.Value
             };
             await this.DbContext.Router.AddAsync(router);
 
@@ -74,7 +74,7 @@ namespace SymmetricDS.Admin.Server.Service
 
         public Task<IDataSourceResponse<RouterViewModel>> ReadAsync(DataSourceRequest request)
         {
-            var responseData = this.DbContext.Router.Include("Project").Include("SourceNodeGroup").Include("TargetNodeGroup").Select(r => r);
+            var responseData = this.DbContext.Router.Include("Project").Include("SourceNodeGroup").Include("TargetNode").Select(r => r);
 
             if (request.ServerFiltering != null) { }
 
@@ -102,7 +102,7 @@ namespace SymmetricDS.Admin.Server.Service
             router.RouterId = model.RouterId;
             router.ProjectId = model.Project.Id.Value;
             router.SourceNodeGroupId = model.SourceNodeGroup.Id.Value;
-            router.TargetNodeGroupId = model.TargetNodeGroup.Id.Value;
+            router.TargetNodeId = model.TargetNode.Id.Value;
 
             bool result = false;
             try

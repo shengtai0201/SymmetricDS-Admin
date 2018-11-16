@@ -74,7 +74,10 @@ namespace SymmetricDS.Admin.Server.Service
         public Task<IDataSourceResponse<TriggerRouterViewModel>> ReadAsync(DataSourceRequest request)
         {
             var responseData = this.DbContext.TriggerRouter
-                .Include("Router").Include("Router.Project").Include("Router.SourceNodeGroup").Include("Router.SourceNodeGroup.Project").Include("Router.TargetNodeGroup").Include("Router.TargetNodeGroup.Project")
+                .Include("Router")
+                    .Include("Router.Project")
+                    .Include("Router.SourceNodeGroup").Include("Router.SourceNodeGroup.Project")
+                    .Include("Router.TargetNode").Include("Router.TargetNode.NodeGroup")
                 .Include("Trigger").Include("Trigger.Channel")
                 .Select(tr => tr);
 

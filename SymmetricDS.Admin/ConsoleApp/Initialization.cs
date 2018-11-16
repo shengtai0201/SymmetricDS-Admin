@@ -125,7 +125,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             var node = this.serverDbContext.Node.Include("NodeGroup").Include("NodeGroup.RouterTargetNodeGroup").SingleOrDefault(n => n.Id == nodeId);
             if (node != null)
             {
-                result = new Node(node);
+                result = new Node(this.database, node);
             }
 
             return result;

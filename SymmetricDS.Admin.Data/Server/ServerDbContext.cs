@@ -119,14 +119,14 @@ namespace SymmetricDS.Admin.Server
                     .HasConstraintName("Router_ProjectId_fkey");
 
                 entity.HasOne(d => d.SourceNodeGroup)
-                    .WithMany(p => p.RouterSourceNodeGroup)
+                    .WithMany(p => p.Router)
                     .HasForeignKey(d => d.SourceNodeGroupId)
                     .HasConstraintName("FK__Router__SourceNo__5812160E");
 
-                entity.HasOne(d => d.TargetNodeGroup)
-                    .WithMany(p => p.RouterTargetNodeGroup)
-                    .HasForeignKey(d => d.TargetNodeGroupId)
-                    .HasConstraintName("FK__Router__TargetNo__59063A47");
+                entity.HasOne(d => d.TargetNode)
+                    .WithMany(p => p.Router)
+                    .HasForeignKey(d => d.TargetNodeId)
+                    .HasConstraintName("Router_TargetNodeId_fkey");
             });
 
             modelBuilder.Entity<Trigger>(entity =>

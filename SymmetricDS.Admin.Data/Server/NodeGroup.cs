@@ -8,8 +8,7 @@ namespace SymmetricDS.Admin.Server
         public NodeGroup()
         {
             Node = new HashSet<Node>();
-            RouterSourceNodeGroup = new HashSet<Router>();
-            RouterTargetNodeGroup = new HashSet<Router>();
+            Router = new HashSet<Router>();
         }
 
         public int Id { get; set; }
@@ -19,7 +18,6 @@ namespace SymmetricDS.Admin.Server
 
         public Project Project { get; set; }
         public ICollection<Node> Node { get; set; }
-        public ICollection<Router> RouterSourceNodeGroup { get; set; }
-        public ICollection<Router> RouterTargetNodeGroup { get; set; }
+        public ICollection<Router> Router { get; set; }
     }
 }

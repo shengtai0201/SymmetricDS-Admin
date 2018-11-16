@@ -5,6 +5,11 @@ namespace SymmetricDS.Admin.Server
 {
     public partial class Node
     {
+        public Node()
+        {
+            Router = new HashSet<Router>();
+        }
+
         public int Id { get; set; }
         public int NodeGroupId { get; set; }
         public string DatabaseHost { get; set; }
@@ -22,5 +27,6 @@ namespace SymmetricDS.Admin.Server
         public int Version { get; set; }
 
         public NodeGroup NodeGroup { get; set; }
+        public ICollection<Router> Router { get; set; }
     }
 }

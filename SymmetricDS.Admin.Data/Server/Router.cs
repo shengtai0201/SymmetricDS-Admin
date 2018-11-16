@@ -14,11 +14,11 @@ namespace SymmetricDS.Admin.Server
         public int ProjectId { get; set; }
         public string RouterId { get; set; }
         public int SourceNodeGroupId { get; set; }
-        public int TargetNodeGroupId { get; set; }
+        public int TargetNodeId { get; set; }
 
         public Project Project { get; set; }
         public NodeGroup SourceNodeGroup { get; set; }
-        public NodeGroup TargetNodeGroup { get; set; }
+        public Node TargetNode { get; set; }
         public ICollection<TriggerRouter> TriggerRouter { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SymmetricDS.Admin.Server;
+﻿using Microsoft.EntityFrameworkCore;
+using SymmetricDS.Admin.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,10 +12,12 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     public class Initialization : IInitialization
     {
+        private readonly Databases database;
         private readonly ServerDbContext serverDbContext;
 
         public Initialization(Databases database, string connectionString)
         {
+            this.database = database;
             this.serverDbContext = new ServerDbContext(database, connectionString);
         }
 
@@ -119,7 +122,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             Node result = null;
 
-            var node = this.serverDbContext.Node.SingleOrDefault(n => n.Id == nodeId);
+            var node = this.serverDbContext.Node.Include("NodeGroup").Include("NodeGroup.RouterTargetNodeGroup").SingleOrDefault(n => n.Id == nodeId);
             if (node != null)
             {
                 result = new Node(node);

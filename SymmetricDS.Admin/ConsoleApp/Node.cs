@@ -16,7 +16,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         public string DbPassword { get; set; }
         public string RegistrationUrl { get; set; }
         public string SyncUrl { get; set; }
-        public NodeGroup Group { get; set; }
+        public string GroupId { get; set; }
         public string ExternalId { get; set; }
         public int JobPurgePeriodTimeMs { get; set; }
         public int JobRoutingPeriodTimeMs { get; set; }
@@ -27,9 +27,32 @@ namespace SymmetricDS.Admin.ConsoleApp
         public string ConnectionString { get; set; }
         public int Version { get; set; }
 
-        public Node(Server.Node node)
+        public Node(Databases database, Server.Node node)
         {
             this.Version = node.Version;
+
+
+            this.IsMaster = router != null;
+
+            this.GroupId = node.NodeGroup.NodeGroupId;
+            this.EngineName = this.GroupId + "-" + node.ExternalId;
+            this.DbDriver = this.GetDbDriver(database);
+            this.DbUrl = this.GetDbUrl(database, node.DatabaseHost, node.DatabaseName);
+            this.DbUser = node.DatabaseUser;
+            this.DbPassword = node.DatabasePassword;
+            this.SyncUrl = string.Format("http://{0}:{1}/sync/{2}", node.DatabaseHost, node.SyncUrlPort, this.EngineName);
+            this.ExternalId = node.ExternalId;
+            this.JobPurgePeriodTimeMs = node.JobPurgePeriodTimeMs ?? 7200000;
+            this.JobRoutingPeriodTimeMs = node.JobRoutingPeriodTimeMs ?? 5000;
+            this.JobPushPeriodTimeMs = node.JobPushPeriodTimeMs ?? 10000;
+            this.JobPullPeriodTimeMs = node.JobPullPeriodTimeMs ?? 10000;
+            this.InitialLoadCreateFirst = node.InitialLoadCreateFirst;
+
+            var projectId = node.NodeGroup.ProjectId;
+            var router = node.NodeGroup.RouterTargetNodeGroup.SingleOrDefault(x => x.ProjectId == projectId);
+            if(router == null)
+                this.RegistrationUrl
+
         }
 
         //public Node(Databases database, string dbHost, string db, string dbUser, string dbPassword,

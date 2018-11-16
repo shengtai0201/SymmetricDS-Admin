@@ -46,10 +46,11 @@ namespace SymmetricDS.Admin.ConsoleApp
             this.InitialLoadCreateFirst = node.InitialLoadCreateFirst;
 
             var projectId = node.NodeGroup.ProjectId;
-            //var router = node.NodeGroup.RouterTargetNodeGroup.SingleOrDefault(x => x.ProjectId == projectId);
-            //if(router == null)
-            //    this.RegistrationUrl
-
+            var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == projectId);
+            if (router != null)
+            {
+                //this.RegistrationUrl
+            }
         }
 
         //public Node(Databases database, string dbHost, string db, string dbUser, string dbPassword,

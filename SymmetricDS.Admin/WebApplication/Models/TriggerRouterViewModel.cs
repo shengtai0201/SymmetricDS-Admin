@@ -32,12 +32,12 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public ChannelViewModel Channel { get; set; }
         public TriggerViewModel Trigger { get; set; }
 
-        public override TriggerRouterViewModel Build(TriggerRouter entity)
+        protected override TriggerRouterViewModel Build(TriggerRouter entity)
         {
-            this.Router = RouterViewModel.NewInstance(entity.Router).Build(entity.Router);
+            this.Router = RouterViewModel.NewInstance(entity.Router);
 
-            this.Channel = ChannelViewModel.NewInstance(entity.Trigger.Channel).Build(entity.Trigger.Channel);
-            this.Trigger = TriggerViewModel.NewInstance(entity.Trigger).Build(entity.Trigger);
+            this.Channel = ChannelViewModel.NewInstance(entity.Trigger.Channel);
+            this.Trigger = TriggerViewModel.NewInstance(entity.Trigger);
 
             return this;
         }

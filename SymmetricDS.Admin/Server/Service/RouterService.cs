@@ -88,7 +88,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(RouterViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(RouterViewModel.NewInstance(data));
 
             return Task.FromResult(response);
         }

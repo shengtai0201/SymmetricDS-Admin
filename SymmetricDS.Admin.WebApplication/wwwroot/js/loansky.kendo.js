@@ -1,5 +1,5 @@
 ﻿/// <reference path="loansky.js" />
-/// <reference path="../lib/kendo/2018.3.911//js/kendo.all.min.js" />
+/// <reference path="../lib/kendo/2018.3.1017//js/kendo.all.min.js" />
 
 loansky.kendo = new function () {
     function defaultError(e) {

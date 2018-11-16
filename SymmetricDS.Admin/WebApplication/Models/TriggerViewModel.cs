@@ -18,7 +18,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
 
         public string SourceTableName { get; set; }
 
-        public override TriggerViewModel Build(Trigger entity)
+        protected override TriggerViewModel Build(Trigger entity)
         {
             this.Channel = ChannelViewModel.NewInstance(entity.Channel);
 

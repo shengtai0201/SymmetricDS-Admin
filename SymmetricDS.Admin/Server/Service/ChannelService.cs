@@ -63,7 +63,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = this.DbContext.Channel.Select(c => c).ToList();
             foreach (var data in dataCollection)
-                channels.Add(ChannelViewModel.NewInstance(data).Build(data));
+                channels.Add(ChannelViewModel.NewInstance(data));
 
             return channels;
         }
@@ -89,7 +89,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(ChannelViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(ChannelViewModel.NewInstance(data));
 
             return Task.FromResult(response);
         }

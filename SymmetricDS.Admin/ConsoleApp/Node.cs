@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SymmetricDS.Admin
+namespace SymmetricDS.Admin.ConsoleApp
 {
-    public abstract class Node : INode, IConfiguration
+    public class Node : INode, IConfiguration
     {
         public string EngineName { get; set; }
         public string DbDriver { get; set; }
@@ -25,40 +25,46 @@ namespace SymmetricDS.Admin
         public bool InitialLoadCreateFirst { get; set; }
 
         public string ConnectionString { get; set; }
+        public int Version { get; set; }
 
-        public Node(Databases database, string dbHost, string db, string dbUser, string dbPassword,
-            string syncUrlPort, NodeGroup group, string externalId,
-            int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
-            int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true)
+        public Node(Server.Node node)
         {
-            this.EngineName = group.GroupId + "-" + externalId;
-            this.DbDriver = this.GetDbDriver(database);
-            this.DbUrl = this.GetDbUrl(database, dbHost, db);
-            this.DbUser = dbUser;
-            this.DbPassword = dbPassword;
-            this.SyncUrl = string.Format("http://{0}:{1}/sync/{2}", dbHost, syncUrlPort, this.EngineName);
-            this.Group = group;
-            this.ExternalId = externalId;
-            this.JobPurgePeriodTimeMs = jobPurgePeriodTimeMs;
-            this.JobRoutingPeriodTimeMs = jobRoutingPeriodTimeMs;
-            this.JobPushPeriodTimeMs = jobPushPeriodTimeMs;
-            this.JobPullPeriodTimeMs = jobPullPeriodTimeMs;
-            this.InitialLoadCreateFirst = initialLoadCreateFirst;
-
-            this.ConnectionString = this.GetConnectionString(database, dbHost, db);
+            this.Version = node.Version;
         }
 
-        public Node(IConfiguration masterNode,
-            Databases database, string dbHost, string db, string dbUser, string dbPassword,
-            string syncUrlPort, NodeGroup group, string externalId,
-            int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
-            int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true) : this(database, dbHost, db, dbUser, dbPassword,
-                syncUrlPort, group, externalId,
-                jobPurgePeriodTimeMs, jobRoutingPeriodTimeMs, jobPushPeriodTimeMs,
-                jobPullPeriodTimeMs, initialLoadCreateFirst)
-        {
-            this.RegistrationUrl = masterNode.SyncUrl;
-        }
+        //public Node(Databases database, string dbHost, string db, string dbUser, string dbPassword,
+        //    string syncUrlPort, NodeGroup group, string externalId,
+        //    int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
+        //    int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true)
+        //{
+        //    this.EngineName = group.GroupId + "-" + externalId;
+        //    this.DbDriver = this.GetDbDriver(database);
+        //    this.DbUrl = this.GetDbUrl(database, dbHost, db);
+        //    this.DbUser = dbUser;
+        //    this.DbPassword = dbPassword;
+        //    this.SyncUrl = string.Format("http://{0}:{1}/sync/{2}", dbHost, syncUrlPort, this.EngineName);
+        //    this.Group = group;
+        //    this.ExternalId = externalId;
+        //    this.JobPurgePeriodTimeMs = jobPurgePeriodTimeMs;
+        //    this.JobRoutingPeriodTimeMs = jobRoutingPeriodTimeMs;
+        //    this.JobPushPeriodTimeMs = jobPushPeriodTimeMs;
+        //    this.JobPullPeriodTimeMs = jobPullPeriodTimeMs;
+        //    this.InitialLoadCreateFirst = initialLoadCreateFirst;
+
+        //    this.ConnectionString = this.GetConnectionString(database, dbHost, db);
+        //}
+
+        //public Node(IConfiguration masterNode,
+        //    Databases database, string dbHost, string db, string dbUser, string dbPassword,
+        //    string syncUrlPort, NodeGroup group, string externalId,
+        //    int jobPurgePeriodTimeMs = 7200000, int jobRoutingPeriodTimeMs = 5000, int jobPushPeriodTimeMs = 10000,
+        //    int jobPullPeriodTimeMs = 10000, bool initialLoadCreateFirst = true) : this(database, dbHost, db, dbUser, dbPassword,
+        //        syncUrlPort, group, externalId,
+        //        jobPurgePeriodTimeMs, jobRoutingPeriodTimeMs, jobPushPeriodTimeMs,
+        //        jobPullPeriodTimeMs, initialLoadCreateFirst)
+        //{
+        //    this.RegistrationUrl = masterNode.SyncUrl;
+        //}
 
         private string GetConnectionString(Databases database, string dbHost, string db)
         {

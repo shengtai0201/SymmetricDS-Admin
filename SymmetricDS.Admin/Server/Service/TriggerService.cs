@@ -69,7 +69,7 @@ namespace SymmetricDS.Admin.Server.Service
 
                 var dataCollection = this.DbContext.Trigger.Include("Channel").Where(t => t.ChannelId == channelId).Select(t => t).ToList();
                 foreach (var data in dataCollection)
-                    triggers.Add(TriggerViewModel.NewInstance(data).Build(data));
+                    triggers.Add(TriggerViewModel.NewInstance(data));
             }
 
             return triggers;
@@ -101,7 +101,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(TriggerViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(TriggerViewModel.NewInstance(data));
 
             return Task.FromResult(response);
         }

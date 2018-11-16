@@ -18,11 +18,11 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public NodeGroupViewModel SourceNodeGroup { get; set; }
         public NodeGroupViewModel TargetNodeGroup { get; set; }
 
-        public override RouterViewModel Build(Router entity)
+        protected override RouterViewModel Build(Router entity)
         {
             this.Project = ProjectViewModel.NewInstance(entity.Project);
-            this.SourceNodeGroup = NodeGroupViewModel.NewInstance(entity.SourceNodeGroup).Build(entity.SourceNodeGroup);
-            this.TargetNodeGroup = NodeGroupViewModel.NewInstance(entity.TargetNodeGroup).Build(entity.TargetNodeGroup);
+            this.SourceNodeGroup = NodeGroupViewModel.NewInstance(entity.SourceNodeGroup);
+            this.TargetNodeGroup = NodeGroupViewModel.NewInstance(entity.TargetNodeGroup);
 
             return this;
         }

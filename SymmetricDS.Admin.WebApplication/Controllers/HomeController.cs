@@ -79,7 +79,7 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         }
         #endregion
 
-        #region Router x Trigger
+        #region Router, Trigger
         [HttpPost]
         public IActionResult ReadChannels()
         {

@@ -1,11 +1,10 @@
-﻿using SymmetricDS.Admin.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SymmetricDS.Admin
+namespace SymmetricDS.Admin.ConsoleApp
 {
     public class NodeGroup
     {
@@ -14,13 +13,13 @@ namespace SymmetricDS.Admin
 
         public ICollection<NodeGroup> Children { get; set; }
 
-        public IEnumerable<sym_node_group> GetNodeGroups()
-        {
-            IList<sym_node_group> result = new List<sym_node_group>();
+        //public IEnumerable<sym_node_group> GetNodeGroups()
+        //{
+        //    IList<sym_node_group> result = new List<sym_node_group>();
 
 
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }

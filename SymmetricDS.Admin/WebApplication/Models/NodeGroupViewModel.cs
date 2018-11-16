@@ -20,7 +20,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
 
         public string Description { get; set; }
 
-        public override NodeGroupViewModel Build(NodeGroup entity)
+        protected override NodeGroupViewModel Build(NodeGroup entity)
         {
             this.Project = ProjectViewModel.NewInstance(entity.Project);
 

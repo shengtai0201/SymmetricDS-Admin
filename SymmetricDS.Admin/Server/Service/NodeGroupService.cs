@@ -69,7 +69,7 @@ namespace SymmetricDS.Admin.Server.Service
 
                 var dataCollection = this.DbContext.NodeGroup.Include("Project").Where(ng => ng.ProjectId == projectId).Select(ng => ng).ToList();
                 foreach (var data in dataCollection)
-                    nodeGroups.Add(NodeGroupViewModel.NewInstance(data).Build(data));
+                    nodeGroups.Add(NodeGroupViewModel.NewInstance(data));
             }
 
             return nodeGroups;
@@ -101,7 +101,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(NodeGroupViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(NodeGroupViewModel.NewInstance(data));
 
             return Task.FromResult(response);
         }

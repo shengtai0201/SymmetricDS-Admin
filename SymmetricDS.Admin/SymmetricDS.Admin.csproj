@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Master\Partial\" />
+    <Folder Include="ConsoleApp\" />
   </ItemGroup>
 
   <ItemGroup>

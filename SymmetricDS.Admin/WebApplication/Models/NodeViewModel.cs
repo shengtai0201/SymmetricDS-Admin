@@ -34,9 +34,9 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public string NodePassword { get; set; }
         public int Version { get; set; }
 
-        public override NodeViewModel Build(Node entity)
+        protected override NodeViewModel Build(Node entity)
         {
-            this.NodeGroup = NodeGroupViewModel.NewInstance(entity.NodeGroup).Build(entity.NodeGroup);
+            this.NodeGroup = NodeGroupViewModel.NewInstance(entity.NodeGroup);
             this.DatabaseType = entity.DatabaseType.GetEnumKeyValue();
 
             return this;

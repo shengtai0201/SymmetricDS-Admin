@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.WebApplic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.Data", "SymmetricDS.Admin.Data\SymmetricDS.Admin.Data.csproj", "{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.ConsoleApp", "SymmetricDS.Admin.ConsoleApp\SymmetricDS.Admin.ConsoleApp.csproj", "{1DE07CF7-C04B-4992-B92C-7744C4188D44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.Tests", "SymmetricDS.Admin.Tests\SymmetricDS.Admin.Tests.csproj", "{1F5E95CE-FB4A-4514-A06E-66D760065C5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,22 @@ Global
 		{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}.Release|x86.ActiveCfg = Release|Any CPU
 		{4334BAC5-F7FC-4B30-A37E-2476969D7CCB}.Release|x86.Build.0 = Release|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Debug|x86.Build.0 = Debug|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Release|x86.ActiveCfg = Release|Any CPU
+		{1DE07CF7-C04B-4992-B92C-7744C4188D44}.Release|x86.Build.0 = Release|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F5E95CE-FB4A-4514-A06E-66D760065C5B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

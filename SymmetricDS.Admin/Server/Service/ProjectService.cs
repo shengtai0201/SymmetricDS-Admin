@@ -82,7 +82,7 @@ namespace SymmetricDS.Admin.Server.Service
 
             var dataCollection = responseData.ToList();
             foreach (var data in dataCollection)
-                response.DataCollection.Add(ProjectViewModel.NewInstance(data).Build(data));
+                response.DataCollection.Add(ProjectViewModel.NewInstance(data));
 
             return Task.FromResult(response);
         }
@@ -93,7 +93,7 @@ namespace SymmetricDS.Admin.Server.Service
 
            var dataCollection = this.DbContext.Project.Select(p => p).ToList();
             foreach (var data in dataCollection)
-                projects.Add(ProjectViewModel.NewInstance(data).Build(data));
+                projects.Add(ProjectViewModel.NewInstance(data));
 
             return projects;
         }

@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SymmetricDS.Admin.ConsoleApp;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace SymmetricDS.Admin.Tests
 {
@@ -65,10 +66,15 @@ namespace SymmetricDS.Admin.Tests
                     string path = @"C:\Program Files\symmetric-server-3.9.15\";
                     bool success = node.CopyTo(path) && node.Write(path);
 
-                    //if(string.IsNullOrEmpty(node.RegistrationUrl) && success)
-                    //{
+                    if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
+                    {
                         this.initialization.CreateTables(path, node);
-                    //}
+                        Thread.Sleep(1000);
+
+                        success = this.initialization.NodeGroups(node) && this.initialization.SynchronizationMethod(node) &&
+                            this.initialization.Node(node) && this.initialization.Channel() && this.initialization.Triggers() &&
+                            this.initialization.Router() && this.initialization.Relationship();
+                    }
                 }
             }
         }

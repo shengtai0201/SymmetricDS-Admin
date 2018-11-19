@@ -27,10 +27,12 @@ namespace SymmetricDS.Admin.ConsoleApp
         public string ConnectionString { get; set; }
         public int Version { get; set; }
         public int ProjectId { get; set; }
+        public string Password { get; set; }
 
         public Node(Databases database, Server.Node node)
         {
             this.Version = node.Version;
+            this.Password = node.NodePassword;
 
             this.GroupId = node.NodeGroup.NodeGroupId;
             this.EngineName = this.GroupId + "-" + node.ExternalId;

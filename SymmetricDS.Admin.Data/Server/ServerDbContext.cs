@@ -4,17 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SymmetricDS.Admin.Server
 {
-    public partial class ServerDbContext : DbContext
+    public partial class ServerDbContext : SymDbContext
     {
-        public ServerDbContext()
-        {
-        }
-
-        public ServerDbContext(DbContextOptions<ServerDbContext> options)
-            : base(options)
-        {
-        }
-
         public virtual DbSet<Channel> Channel { get; set; }
         public virtual DbSet<Node> Node { get; set; }
         public virtual DbSet<NodeGroup> NodeGroup { get; set; }

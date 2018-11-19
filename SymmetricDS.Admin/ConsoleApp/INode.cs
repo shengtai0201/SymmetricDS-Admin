@@ -8,8 +8,11 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     public interface INode
     {
-        int Version { get; }
         int ProjectId { get; }
+        string ExternalId { get; }
+        string GroupId { get; }
+        string Password { get; }
+        int Version { get; }
 
         //string ConnectionString { get; }
 

@@ -16,7 +16,6 @@
     <Compile Remove="INode.cs" />
     <Compile Remove="IStart.cs" />
     <Compile Remove="MasterNode.cs" />
-    <Compile Remove="Master\Partial\MasterDbContext.cs" />
     <Compile Remove="Node.cs" />
     <Compile Remove="NodeGroup.cs" />
     <Compile Remove="Router.cs" />
@@ -24,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Master\Partial\" />
     <Folder Include="ConsoleApp\" />
+    <Folder Include="Master\Service\" />
   </ItemGroup>
 
   <ItemGroup>

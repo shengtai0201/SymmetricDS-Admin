@@ -5,30 +5,8 @@ using System.Text;
 
 namespace SymmetricDS.Admin.Server
 {
-    public partial class ServerDbContext : DbContext
+    public partial class ServerDbContext : SymDbContext
     {
-        private readonly Databases database;
-        private readonly string connectionString;
-
-        public ServerDbContext(Databases database, string connectionString)
-        {
-            this.database = database;
-            this.connectionString = connectionString;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                switch (this.database)
-                {
-                    case Databases.PostgreSQL:
-                        optionsBuilder.UseNpgsql(this.connectionString);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+        public ServerDbContext(Databases database, string connectionString) : base(database, connectionString) { }
     }
 }

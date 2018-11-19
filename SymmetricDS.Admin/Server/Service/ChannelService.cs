@@ -19,6 +19,9 @@ namespace SymmetricDS.Admin.Server.Service
 
         public async Task<bool> CreateAsync(ChannelViewModel model, IDataSource dataSource)
         {
+            if (new string[] { "config", "reload", "monitor", "heartbeat", "default", "dynamic" }.Contains(model.ChannelId))
+                return false;
+
             var channel = new Channel
             {
                 ChannelId = model.ChannelId,
@@ -96,6 +99,9 @@ namespace SymmetricDS.Admin.Server.Service
 
         public async Task<bool?> UpdateAsync(int key, ChannelViewModel model, IDataSource dataSource)
         {
+            if (new string[] { "config", "reload", "monitor", "heartbeat", "default", "dynamic" }.Contains(model.ChannelId))
+                return false;
+
             var channel = await this.ReadAsync(key);
             if (channel == null)
                 return null;

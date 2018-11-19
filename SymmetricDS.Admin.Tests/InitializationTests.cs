@@ -47,7 +47,6 @@ namespace SymmetricDS.Admin.Tests
             this.initialization = null;
         }
 
-
         [Test]
         public void CheckVersion()
         {
@@ -59,14 +58,19 @@ namespace SymmetricDS.Admin.Tests
                 Console.WriteLine("伺服器未登錄本節點資訊");
             else
             {
-                if(node.Version == version)
+                if (node.Version == version)
                     Console.WriteLine("本節點不須更新");
                 else
                 {
+                    string path = @"C:\Program Files\symmetric-server-3.9.15\";
+                    bool success = node.CopyTo(path) && node.Write(path);
 
+                    //if(string.IsNullOrEmpty(node.RegistrationUrl) && success)
+                    //{
+                        this.initialization.CreateTables(path, node);
+                    //}
                 }
             }
-                
         }
     }
 }

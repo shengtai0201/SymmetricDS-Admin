@@ -26,6 +26,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         public string ConnectionString { get; set; }
         public int Version { get; set; }
+        public int ProjectId { get; set; }
 
         public Node(Databases database, Server.Node node)
         {
@@ -45,11 +46,13 @@ namespace SymmetricDS.Admin.ConsoleApp
             this.JobPullPeriodTimeMs = node.JobPullPeriodTimeMs ?? 10000;
             this.InitialLoadCreateFirst = node.InitialLoadCreateFirst;
 
-            var projectId = node.NodeGroup.ProjectId;
-            var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == projectId);
+            // Router 的 Source 是 NodeGroup 集合陣列，Target 是單一個 Node
+            this.ProjectId = node.NodeGroup.ProjectId;
+            var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == this.ProjectId);
             if (router != null)
             {
-                //this.RegistrationUrl
+                var targetEngineName = router.TargetNode.NodeGroup.NodeGroupId + "-" + router.TargetNode.ExternalId;
+                this.RegistrationUrl = string.Format("http://{0}:{1}/sync/{2}", router.TargetNode.DatabaseHost, router.TargetNode.SyncUrlPort, targetEngineName);
             }
         }
 
@@ -156,7 +159,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 this.ReadStartsWithReplace(ref contents, path, "db.password=", this.DbPassword);
                 this.ReadStartsWithReplace(ref contents, path, "registration.url=", this.RegistrationUrl);
                 this.ReadStartsWithReplace(ref contents, path, "sync.url=", this.SyncUrl);
-                //this.ReadStartsWithReplace(ref contents, path, "group.id=", this.Group.GroupId);
+                this.ReadStartsWithReplace(ref contents, path, "group.id=", this.GroupId);
                 this.ReadStartsWithReplace(ref contents, path, "external.id=", this.ExternalId);
                 this.ReadStartsWithReplace(ref contents, path, "job.purge.period.time.ms=", this.JobPurgePeriodTimeMs);
                 this.ReadStartsWithReplace(ref contents, path, "job.routing.period.time.ms=", this.JobRoutingPeriodTimeMs);

@@ -32,71 +32,47 @@ namespace SymmetricDS.Admin.ConsoleApp
         //    throw new NotImplementedException();
         //}
 
-        //public void CreateTables(string path, IConfiguration configuration)
-        //{
-        //    string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
+        public void CreateTables(string path, IConfiguration configuration)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
 
-        //    ProcessStartInfo startInfo = new ProcessStartInfo
-        //    {
-        //        FileName = fileName,
-        //        UseShellExecute = false,
-        //        RedirectStandardOutput = true,
-        //        Arguments = $"--engine {configuration.EngineName} create-sym-tables"
-        //    };
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                Arguments = $"--engine {configuration.EngineName} create-sym-tables"
+            };
 
-        //    Process process = Process.Start(startInfo);
+            Process process = Process.Start(startInfo);
 
-        //    StreamReader reader = process.StandardOutput;
-        //    string line = reader.ReadLine();
-        //    while (!reader.EndOfStream)
-        //    {
-        //        if (!string.IsNullOrEmpty(line))
-        //            Console.WriteLine(line);
+            StreamReader reader = process.StandardOutput;
+            string line = reader.ReadLine();
+            while (!reader.EndOfStream)
+            {
+                if (!string.IsNullOrEmpty(line))
+                    Console.WriteLine(line);
 
-        //        line = reader.ReadLine();
-        //    }
-        //    reader.Close();
-        //    reader.Dispose();
+                line = reader.ReadLine();
+            }
+            reader.Close();
+            reader.Dispose();
 
-        //    process.WaitForExit();
-        //    process.Close();
-        //    process.Dispose();
-        //}
+            process.WaitForExit();
+            process.Close();
+            process.Dispose();
+        }
 
         //public void Node()
         //{
         //    throw new NotImplementedException();
         //}
 
-        //public bool NodeGroup(KeyValuePair<string, string> master, IDictionary<string, string> clients)
-        //{
-        //    var masterNodeGroup = new sym_node_group
-        //    {
-        //        node_group_id = master.Key,
-        //        description = master.Value
-        //    };
-        //    this.dbContext.sym_node_group.Add(masterNodeGroup);
-
-        //    foreach(var client in clients)
-        //    {
-        //        var clientNodeGroup = new sym_node_group
-        //        {
-        //            node_group_id = client.Key,
-        //            description = client.Value
-        //        };
-        //        this.dbContext.sym_node_group.Add(clientNodeGroup);
-        //    }
-
-        //    bool result = false;
-        //    try
-        //    {
-        //        this.dbContext.SaveChanges();
-        //        result = true;
-        //    }
-        //    catch { }
-
-        //    return result;
-        //}
+        public bool NodeGroups(INode node)
+        {
+            //var newNodeGroups = this.serverDbContext.NodeGroup.Where(ng => ng.ProjectId == node.ProjectId).ToList();
+            return false;
+        }
 
         //public void Relationship()
         //{
@@ -122,11 +98,12 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             Node result = null;
 
-            var node = this.serverDbContext.Node.Include("NodeGroup").Include("NodeGroup.RouterTargetNodeGroup").SingleOrDefault(n => n.Id == nodeId);
+            var node = this.serverDbContext.Node
+                .Include("NodeGroup")
+                .Include("NodeGroup.Router").Include("NodeGroup.Router.TargetNode").Include("NodeGroup.Router.TargetNode.NodeGroup")
+                .SingleOrDefault(n => n.Id == nodeId);
             if (node != null)
-            {
                 result = new Node(this.database, node);
-            }
 
             return result;
         }

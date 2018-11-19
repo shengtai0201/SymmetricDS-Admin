@@ -10,11 +10,12 @@ namespace SymmetricDS.Admin.ConsoleApp
     {
         Node GetNode(int nodeId);
 
-        //// Step 1.對Database進行初始化
-        //void CreateTables(string path, IConfiguration configuration);
+        // Step 1.對Database進行初始化
+        void CreateTables(string path, IConfiguration configuration);
 
-        //// Step 2.寫入Node Group
-        //bool NodeGroup(KeyValuePair<string, string> master, IDictionary<string, string> clients);
+
+        // Step 2.寫入Node Group
+        bool NodeGroups(INode node);
 
         //// Step 3.設定Node Group之間的資料同步方式
         //void SynchronizationMethod();

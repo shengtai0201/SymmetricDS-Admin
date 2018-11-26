@@ -14,7 +14,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         string Password { get; }
         int Version { get; }
 
-        //string ConnectionString { get; }
+        IStart MasterNode { get; }
 
         bool CopyTo(string path);
         bool Write(string path);

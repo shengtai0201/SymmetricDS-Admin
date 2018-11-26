@@ -24,12 +24,6 @@ namespace SymmetricDS.Admin.ConsoleApp
             this.serverDbContext = new ServerDbContext(database, connectionString);
         }
 
-        //private readonly SymDbContext dbContext;
-        //public Initialization(INode configuration)
-        //{
-        //    this.dbContext = new SymDbContext(configuration.ConnectionString);
-        //}
-
         public bool Channel()
         {
             var oldChannels = this.masterDbContext.SymChannel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
@@ -89,6 +83,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 FileName = fileName,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
+                CreateNoWindow = true,
                 Arguments = $"--engine {configuration.EngineName} create-sym-tables"
             };
 
@@ -459,11 +454,19 @@ namespace SymmetricDS.Admin.ConsoleApp
             Node result = null;
 
             var node = this.serverDbContext.Node
-                .Include("NodeGroup")
-                .Include("NodeGroup.Router").Include("NodeGroup.Router.TargetNode").Include("NodeGroup.Router.TargetNode.NodeGroup")
+                .Include("NodeGroup").Include("NodeGroup.Router")
+                .Include("NodeGroup.Router.TargetNode").Include("NodeGroup.Router.TargetNode.NodeGroup")
+                .Include("Router.SourceNodeGroup.Node")
                 .SingleOrDefault(n => n.Id == nodeId);
             if (node != null)
-                result = new Node(this.database, node);
+            {
+                var projectId = node.NodeGroup.ProjectId;
+                var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == projectId);
+                if (router == null)
+                    result = new MasterNode(this.database, node);
+                else
+                    result = new Node(this.database, node);
+            }
 
             return result;
         }

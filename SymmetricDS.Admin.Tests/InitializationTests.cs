@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using SymmetricDS.Admin.ConsoleApp;
 using System;
@@ -30,7 +31,7 @@ namespace SymmetricDS.Admin.Tests
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             this.configuration = builder.Build();
 
@@ -74,9 +75,46 @@ namespace SymmetricDS.Admin.Tests
                         success = this.initialization.NodeGroups(node) && this.initialization.SynchronizationMethod(node) &&
                             this.initialization.Node(node) && this.initialization.Channel() && this.initialization.Triggers() &&
                             this.initialization.Router() && this.initialization.Relationship();
+
+                        if (success)
+                        {
+                            node.MasterNode.Register(path, node);
+                            Thread.Sleep(3000);
+
+                            node.MasterNode.Start(path);
+                        }
                     }
                 }
             }
+        }
+
+        private string ReadStartsWith(string path, string value)
+        {
+            foreach (var line in File.ReadAllLines(path))
+                if (line.StartsWith(value))
+                    return line;
+
+            return null;
+        }
+
+        [Test]
+        public void AAA()
+        {
+            Console.WriteLine(this.configuration["Version"]);
+
+            string path = @"C:\Users\User\Documents\Visual Studio 2017\Projects\SymmetricDS\SymmetricDS.Admin.Tests\bin\Debug\netcoreapp2.1\";
+            path = Path.GetFullPath(path + "appsettings.json");
+
+            string value = File.ReadAllText(path);
+            var appSettings = JsonConvert.DeserializeObject<AppSettings>(value);
+            Console.WriteLine(appSettings.Version);
+
+            appSettings.Version = "123";
+            value = JsonConvert.SerializeObject(appSettings);
+            File.WriteAllText(path, value);
+
+            this.configuration.Reload();
+            Console.WriteLine(this.configuration["Version"]);
         }
     }
 }

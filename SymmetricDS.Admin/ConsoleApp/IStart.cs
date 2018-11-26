@@ -9,9 +9,9 @@ namespace SymmetricDS.Admin.ConsoleApp
     public interface IStart
     {
         // Step 1.註冊Client Node
-        void Register();
+        void Register(string path, IConfiguration configuration);
 
         // Step 2.啟動服務
-        void Start();
+        void Start(string path);
     }
 }

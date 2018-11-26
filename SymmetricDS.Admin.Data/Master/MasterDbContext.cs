@@ -4,8 +4,22 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SymmetricDS.Admin.Master
 {
+<<<<<<< HEAD
     public partial class MasterDbContext : SymDbContext
     {
+=======
+    public partial class MasterDbContext : DbContext
+    {
+        public MasterDbContext()
+        {
+        }
+
+        public MasterDbContext(DbContextOptions<MasterDbContext> options)
+            : base(options)
+        {
+        }
+
+>>>>>>> 22c7aeeae448d729d1148b4abd7e4002c6c1ffd0
         public virtual DbSet<SymChannel> SymChannel { get; set; }
         public virtual DbSet<SymConflict> SymConflict { get; set; }
         public virtual DbSet<SymContext> SymContext { get; set; }
@@ -54,6 +68,18 @@ namespace SymmetricDS.Admin.Master
         public virtual DbSet<SymTriggerRouter> SymTriggerRouter { get; set; }
         public virtual DbSet<SymTriggerRouterGrouplet> SymTriggerRouterGrouplet { get; set; }
 
+<<<<<<< HEAD
+=======
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseNpgsql("Host=127.0.0.1;Database=Mys;Username=postgres;port=5432");
+            }
+        }
+
+>>>>>>> 22c7aeeae448d729d1148b4abd7e4002c6c1ffd0
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SymChannel>(entity =>

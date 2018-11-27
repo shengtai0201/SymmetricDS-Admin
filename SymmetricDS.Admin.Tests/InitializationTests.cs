@@ -12,7 +12,7 @@ namespace SymmetricDS.Admin.Tests
     public class InitializationTests
     {
         private IConfigurationRoot configuration;
-        private IInitialization initialization;
+        private IInitializationService initialization;
 
         public InitializationTests()
         {
@@ -35,8 +35,8 @@ namespace SymmetricDS.Admin.Tests
 
             this.configuration = builder.Build();
 
-            if (Enum.TryParse(configuration["Database"], out Databases database))
-                this.initialization = new Initialization(database, configuration["ConnectionString"]);
+            //if (Enum.TryParse(configuration["Database"], out Databases database))
+            //    this.initialization = new Initialization(database, configuration["ConnectionString"]);
         }
 
         [OneTimeTearDown]
@@ -81,7 +81,7 @@ namespace SymmetricDS.Admin.Tests
                             node.MasterNode.Register(path, node);
                             Thread.Sleep(3000);
 
-                            node.MasterNode.Start(path);
+                            node.MasterNode.RunOnlyOnce(path);
                         }
                     }
                 }
@@ -109,7 +109,7 @@ namespace SymmetricDS.Admin.Tests
             var appSettings = JsonConvert.DeserializeObject<AppSettings>(value);
             Console.WriteLine(appSettings.Version);
 
-            appSettings.Version = "123";
+            appSettings.Version = 123;
             value = JsonConvert.SerializeObject(appSettings);
             File.WriteAllText(path, value);
 

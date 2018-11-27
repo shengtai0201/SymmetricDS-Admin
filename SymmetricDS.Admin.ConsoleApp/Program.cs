@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -8,24 +12,37 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     class Program
     {
-        private static void Run(int nodeId, int version, IInitialization initialization, AppSettings appSettings)
+        private static void Run(AppSettings appSettings, IInitializationService initialization)
         {
-            var node = initialization.GetNode(nodeId);
+            var node = initialization.GetNode(appSettings.NodeId);
             if (node == null)
                 Console.WriteLine("伺服器未登錄本節點資訊");
             else
             {
-                if (node.Version == version)
+                node.StopService(appSettings.SymmetricServerPath);
+                Thread.Sleep(100);
+                node.UninstallService(appSettings.SymmetricServerPath);
+                Thread.Sleep(100);
+
+                if (node.Version == appSettings.Version)
                     Console.WriteLine("本節點不須更新");
                 else
                 {
-                    string path = @"C:\Program Files\symmetric-server-3.9.15\";
-                    bool success = node.CopyTo(path) && node.Write(path);
+                    bool success = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
 
                     if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
                     {
-                        initialization.CreateTables(path, node);
-                        Thread.Sleep(1000);
+                        int check = 0;
+
+                        initialization.CreateTables(appSettings.SymmetricServerPath, node);
+                        do
+                        {
+                            check += 1;
+                            success = initialization.CheckTables();
+                            Thread.Sleep(1000);
+                        } while (!success && check < 3);
+                        if (!success)
+                            throw new Exception("資料表處理失敗");
 
                         success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
                             initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
@@ -33,38 +50,64 @@ namespace SymmetricDS.Admin.ConsoleApp
 
                         if (success)
                         {
-                            node.MasterNode.Register(path, node);
+                            node.MasterNode.Register(appSettings.SymmetricServerPath, node);
+                            // todo: check
                             Thread.Sleep(3000);
-
-                            node.MasterNode.Start(path);
-                            Thread.Sleep(1000);
-
-                            appSettings.Version = node.Version.ToString();
-                            string contents = JsonConvert.SerializeObject(appSettings);
-                            File.WriteAllText(path, contents);
                         }
                         else
                             Console.WriteLine("初始化失敗");
                     }
+
+                    if (success)
+                    {
+                        node.InstallService(appSettings.SymmetricServerPath);
+                        Thread.Sleep(100);
+                        node.StartService(appSettings.SymmetricServerPath);
+                        Thread.Sleep(100);
+
+                        appSettings.Version = node.Version;
+                        string contents = JsonConvert.SerializeObject(appSettings);
+                        string path = Directory.GetCurrentDirectory();
+                        path = Path.GetFullPath(path + "appsettings.json");
+                        File.WriteAllText(path, contents);
+                    }
+                    else
+                        Console.WriteLine("設定配置失敗");
                 }
             }
         }
 
+        static ILoggerFactory LoggerFactory { get; set; }
+        static IConfigurationRoot Configuration { get; set; }
+
         static void Main(string[] args)
         {
-            string path = Directory.GetCurrentDirectory();
-            path = Path.GetFullPath(path + "appsettings.json");
-            string value = File.ReadAllText(path);
-            var appSettings = JsonConvert.DeserializeObject<AppSettings>(value);
+            var services = new ServiceCollection();
 
-            if (Enum.TryParse(appSettings.Database, out Databases database))
-            {
-                int nodeId = Convert.ToInt32(appSettings.NodeId);
-                int version = Convert.ToInt32(appSettings.Version);
-                var initialization = new Initialization(database, appSettings.ConnectionString);
+            var builder = new ConfigurationBuilder().SetBasePath(Path.Combine(AppContext.BaseDirectory)).AddJsonFile("appsettings.json", true, true);
+            Configuration = builder.Build();
 
-                Run(nodeId, version, initialization, appSettings);
-            }
+            LoggerFactory = new LoggerFactory().AddConsole(Configuration.GetSection("Logging")).AddDebug();
+
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddEntityFrameworkNpgsql().AddDbContext<Master.MasterDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
+            services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
+            services.AddOptions().Configure<AppSettings>(Configuration);
+            services.AddScoped<IInitializationService, InitializationService>();
+
+            // build
+            var serviceProvider = services.BuildServiceProvider();
+
+            var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
+            logger.LogInformation("Starting application");
+
+            var appSettings = serviceProvider.GetService<IOptions<AppSettings>>().Value;
+            if (appSettings.SymmetricServerPath.Contains(' '))
+                throw new Exception("應用程式目錄不可有空白");
+            var initialization = serviceProvider.GetService<IInitializationService>();
+            Run(appSettings, initialization);
+
+            logger.LogInformation("All done!");
         }
     }
 }

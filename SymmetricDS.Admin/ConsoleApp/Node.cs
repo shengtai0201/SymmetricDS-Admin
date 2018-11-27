@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shengtai;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,12 +25,13 @@ namespace SymmetricDS.Admin.ConsoleApp
         public int JobPullPeriodTimeMs { get; set; }
         public bool InitialLoadCreateFirst { get; set; }
 
-        public string ConnectionString { get; set; }
+        //public string ConnectionString { get; set; }
         public int Version { get; set; }
         public int ProjectId { get; set; }
         public string Password { get; set; }
 
-        public IStart MasterNode { get; set; }
+        public IMaster MasterNode { get; set; }
+        private readonly string syncUrlPort;
 
         public Node(Databases database, Server.Node node)
         {
@@ -42,6 +44,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             this.DbUrl = this.GetDbUrl(database, node.DatabaseHost, node.DatabaseName);
             this.DbUser = node.DatabaseUser;
             this.DbPassword = node.DatabasePassword;
+            this.syncUrlPort = node.SyncUrlPort;
             this.SyncUrl = string.Format("http://{0}:{1}/sync/{2}", node.DatabaseHost, node.SyncUrlPort, this.EngineName);
             this.ExternalId = node.ExternalId;
             this.JobPurgePeriodTimeMs = node.JobPurgePeriodTimeMs ?? 7200000;
@@ -172,6 +175,41 @@ namespace SymmetricDS.Admin.ConsoleApp
                     return line;
 
             return null;
+        }
+
+        public void RunOnlyOnce(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym.bat");
+
+            DefaultExtensions.ProcessStart(fileName, $"-port {this.syncUrlPort}");
+        }
+
+        public void StartService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+
+            DefaultExtensions.ProcessStart(fileName, "start");
+        }
+
+        public void InstallService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+
+            DefaultExtensions.ProcessStart(fileName, "install");
+        }
+
+        public void StopService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+
+            DefaultExtensions.ProcessStart(fileName, "stop");
+        }
+
+        public void UninstallService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+
+            DefaultExtensions.ProcessStart(fileName, "uninstall");
         }
     }
 }

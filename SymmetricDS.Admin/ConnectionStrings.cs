@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SymmetricDS.Admin.WebApplication.Models
+namespace SymmetricDS.Admin
 {
     public class ConnectionStrings : IDefaultConnection
     {

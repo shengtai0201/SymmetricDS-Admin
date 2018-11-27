@@ -14,9 +14,16 @@ namespace SymmetricDS.Admin.ConsoleApp
         string Password { get; }
         int Version { get; }
 
-        IStart MasterNode { get; }
+        IMaster MasterNode { get; }
 
         bool CopyTo(string path);
         bool Write(string path);
+
+        // Step 2.啟動服務
+        void RunOnlyOnce(string path);
+        void InstallService(string path);
+        void UninstallService(string path);
+        void StopService(string path);
+        void StartService(string path);
     }
 }

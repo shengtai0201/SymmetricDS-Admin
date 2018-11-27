@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
-    public interface IInitialization
+    public interface IInitializationService
     {
         Node GetNode(int nodeId);
 
         // Step 1.對Database進行初始化
         void CreateTables(string path, IConfiguration configuration);
+        bool CheckTables();
 
         // Step 2.寫入Node Group
         bool NodeGroups(INode node);

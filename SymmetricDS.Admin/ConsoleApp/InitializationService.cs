@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Shengtai;
 using SymmetricDS.Admin.Master;
 using SymmetricDS.Admin.Server;
 using System;
@@ -11,17 +13,17 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
-    public class Initialization : IInitialization
+    public class InitializationService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, IInitializationService
     {
         private readonly Databases database;
         private readonly MasterDbContext masterDbContext;
         private readonly ServerDbContext serverDbContext;
 
-        public Initialization(Databases database, string connectionString)
+        public InitializationService(MasterDbContext masterDbContext, ServerDbContext serverDbContext, IOptions<AppSettings> options) : base(options.Value, masterDbContext)
         {
-            this.database = database;
-            this.masterDbContext = new MasterDbContext(database, connectionString);
-            this.serverDbContext = new ServerDbContext(database, connectionString);
+            this.database = options.Value.Database;
+            this.masterDbContext = masterDbContext;
+            this.serverDbContext = serverDbContext;
         }
 
         public bool Channel()
@@ -77,33 +79,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         public void CreateTables(string path, IConfiguration configuration)
         {
             string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
-
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = fileName,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true,
-                Arguments = $"--engine {configuration.EngineName} create-sym-tables"
-            };
-
-            Process process = Process.Start(startInfo);
-
-            StreamReader reader = process.StandardOutput;
-            string line = reader.ReadLine();
-            while (!reader.EndOfStream)
-            {
-                if (!string.IsNullOrEmpty(line))
-                    Console.WriteLine(line);
-
-                line = reader.ReadLine();
-            }
-            reader.Close();
-            reader.Dispose();
-
-            process.WaitForExit();
-            process.Close();
-            process.Dispose();
+            DefaultExtensions.ProcessStart(fileName, $"--engine {configuration.EngineName} create-sym-tables");
         }
 
         public bool Node(INode node)
@@ -469,6 +445,20 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
 
             return result;
+        }
+
+        public bool CheckTables()
+        {
+            string cmdText = @"SELECT COUNT(*) 
+                FROM
+	                information_schema.tables 
+                WHERE
+	                table_schema = 'public' 
+	                AND table_type = 'BASE TABLE' 
+	                AND TABLE_NAME LIKE'sym_%'";
+            var result = this.ExecuteScalar<int>(cmdText);
+
+            return result == 47;
         }
     }
 }

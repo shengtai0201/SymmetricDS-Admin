@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SymmetricDS.Admin.Master
 {
-    public partial class MasterDbContext : SymDbContext
+    public partial class MasterDbContext : DbContext
     {
-        public MasterDbContext(Databases database, string connectionString) : base(database, connectionString) { }
+        public MasterDbContext(DbContextOptions<MasterDbContext> options) : base(options) { }
     }
 }

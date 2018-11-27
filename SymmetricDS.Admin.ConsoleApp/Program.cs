@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SymmetricDS.Admin.Master;
+using SymmetricDS.Admin.Master.Service;
 using System;
 using System.IO;
 using System.Threading;
@@ -12,7 +14,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     class Program
     {
-        private static void Run(AppSettings appSettings, IInitializationService initialization)
+        private static void Run(AppSettings appSettings, IInitializationService initialization, INodeSecurityService nodeSecurityService)
         {
             var node = initialization.GetNode(appSettings.NodeId);
             if (node == null)
@@ -42,7 +44,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                             Thread.Sleep(1000);
                         } while (!success && check < 3);
                         if (!success)
-                            throw new Exception("資料表處理失敗");
+                            throw new Exception("資料表處理失敗，有可能是資料庫 pg_hba.conf 設定錯誤");
 
                         success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
                             initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
@@ -50,9 +52,16 @@ namespace SymmetricDS.Admin.ConsoleApp
 
                         if (success)
                         {
-                            node.MasterNode.Register(appSettings.SymmetricServerPath, node);
-                            // todo: check
-                            Thread.Sleep(3000);
+                            check = 0;
+                            var nodeIds = node.MasterNode.Register(appSettings.SymmetricServerPath, node);
+                            do
+                            {
+                                check += 1;
+                                success = nodeSecurityService.CheckRegister(nodeIds);
+                                Thread.Sleep(1000);
+                            } while (!success && check < 3);
+                            if (!success)
+                                throw new Exception("註冊 client node 失敗");
                         }
                         else
                             Console.WriteLine("初始化失敗");
@@ -94,6 +103,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
             services.AddOptions().Configure<AppSettings>(Configuration);
             services.AddScoped<IInitializationService, InitializationService>();
+            services.AddScoped<INodeSecurityService, NodeSecurityService>();
 
             // build
             var serviceProvider = services.BuildServiceProvider();
@@ -105,7 +115,8 @@ namespace SymmetricDS.Admin.ConsoleApp
             if (appSettings.SymmetricServerPath.Contains(' '))
                 throw new Exception("應用程式目錄不可有空白");
             var initialization = serviceProvider.GetService<IInitializationService>();
-            Run(appSettings, initialization);
+            var nodeSecurityService = serviceProvider.GetService<INodeSecurityService>();
+            Run(appSettings, initialization, nodeSecurityService);
 
             logger.LogInformation("All done!");
         }

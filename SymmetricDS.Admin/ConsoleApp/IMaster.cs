@@ -9,6 +9,6 @@ namespace SymmetricDS.Admin.ConsoleApp
     public interface IMaster
     {
         // Step 1.註冊Client Node
-        void Register(string path, IConfiguration configuration);
+        ICollection<string> Register(string path, IConfiguration configuration);
     }
 }

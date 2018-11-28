@@ -14,8 +14,7 @@ namespace SymmetricDS.Admin.Master.Service
 
         public bool CheckRegister(ICollection<string> nodeIds)
         {
-            var count = this.DbContext.SymNodeSecurity.Count(x => nodeIds.Contains(x.NodeId));
-            return count == nodeIds.Count;
+            return NodeSecurityService.CheckRegister(nodeIds, this.DbContext);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SymmetricDS.Admin.Tests
     public class InitializationTests
     {
         private IConfigurationRoot configuration;
-        private IInitializationService initialization;
+        //private IInitializationService initialization;
 
         public InitializationTests()
         {
@@ -46,7 +46,7 @@ namespace SymmetricDS.Admin.Tests
             //this.client1Node = null;
             //this.client2Node = null;
             //this.client3Node = null;
-            this.initialization = null;
+            //this.initialization = null;
         }
 
         //[Test]

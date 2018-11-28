@@ -99,10 +99,6 @@ namespace SymmetricDS.Admin.ConsoleApp
             Configuration = builder.Build();
 
             LoggerFactory = new LoggerFactory().AddConsole(Configuration.GetSection("Logging")).AddDebug();
-
-            string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            services.AddEntityFrameworkNpgsql().AddDbContext<Master.MasterDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
-            services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
             services.AddOptions().Configure<AppSettings>(Configuration);
 
             // build
@@ -110,15 +106,20 @@ namespace SymmetricDS.Admin.ConsoleApp
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
             logger.LogInformation("Starting application");
 
+            string connectionString = Configuration.GetConnectionString("DefaultConnection");
             var appSettings = serviceProvider.GetService<IOptions<AppSettings>>().Value;
             // add service(by databse type) here
             switch (appSettings.Database)
             {
                 case Databases.PostgreSQL:
+                    services.AddEntityFrameworkNpgsql().AddDbContext<Master.MasterDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
+                    services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
                     services.AddScoped<IInitializationService, NpgsqlInitializationService>();
                     services.AddScoped<Master.INodeSecurityService, NpgsqlNodeSecurityService>();
                     break;
                 case Databases.SQLServer:
+                    services.AddEntityFrameworkSqlServer().AddDbContext<Master.MasterDbContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Transient);
+                    services.AddEntityFrameworkSqlServer().AddDbContext<Server.ServerDbContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Transient);
                     services.AddScoped<IInitializationService, SqlInitializationService>();
                     services.AddScoped<Master.INodeSecurityService, SqlNodeSecurityService>();
                     break;

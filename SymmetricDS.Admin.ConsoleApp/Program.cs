@@ -16,72 +16,75 @@ namespace SymmetricDS.Admin.ConsoleApp
     {
         private static void Run(AppSettings appSettings, IInitializationService initialization, INodeSecurityService nodeSecurityService)
         {
-            var node = initialization.GetNode(appSettings.NodeId);
-            if (node == null)
-                Console.WriteLine("伺服器未登錄本節點資訊");
-            else
+            foreach(var nodeId in appSettings.NodeIds)
             {
-                node.StopService(appSettings.SymmetricServerPath);
-                Thread.Sleep(100);
-                node.UninstallService(appSettings.SymmetricServerPath);
-                Thread.Sleep(100);
-
-                if (node.Version == appSettings.Version)
-                    Console.WriteLine("本節點不須更新");
+                var node = initialization.GetNode(nodeId);
+                if (node == null)
+                    Console.WriteLine($"伺服器未登錄 NodeId:{nodeId} 資訊");
                 else
                 {
-                    bool success = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
+                    node.StopService(appSettings.SymmetricServerPath);
+                    Thread.Sleep(100);
+                    node.UninstallService(appSettings.SymmetricServerPath);
+                    Thread.Sleep(100);
 
-                    if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
+                    if (node.Version == appSettings.Version)
+                        Console.WriteLine($"NodeId:{nodeId} 不須更新");
+                    else
                     {
-                        int check = 0;
+                        bool success = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
 
-                        initialization.CreateTables(appSettings.SymmetricServerPath, node);
-                        do
+                        if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
                         {
-                            check += 1;
-                            success = initialization.CheckTables();
-                            Thread.Sleep(1000);
-                        } while (!success && check < 3);
-                        if (!success)
-                            throw new Exception("資料表處理失敗，有可能是資料庫 pg_hba.conf 設定錯誤");
+                            int check = 0;
 
-                        success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
-                            initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
-                            initialization.Router() && initialization.Relationship();
-
-                        if (success)
-                        {
-                            check = 0;
-                            var nodeIds = node.MasterNode.Register(appSettings.SymmetricServerPath, node);
+                            initialization.CreateTables(appSettings.SymmetricServerPath, node);
                             do
                             {
                                 check += 1;
-                                success = nodeSecurityService.CheckRegister(nodeIds);
+                                success = initialization.CheckTables();
                                 Thread.Sleep(1000);
                             } while (!success && check < 3);
                             if (!success)
-                                throw new Exception("註冊 client node 失敗");
+                                throw new Exception($"NodeId:{nodeId} 資料表處理失敗，有可能是資料庫 pg_hba.conf 設定錯誤");
+
+                            success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
+                                initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
+                                initialization.Router() && initialization.Relationship();
+
+                            if (success)
+                            {
+                                check = 0;
+                                var nodeIds = node.MasterNode.Register(appSettings.SymmetricServerPath, node);
+                                do
+                                {
+                                    check += 1;
+                                    success = nodeSecurityService.CheckRegister(nodeIds);
+                                    Thread.Sleep(1000);
+                                } while (!success && check < 3);
+                                if (!success)
+                                    throw new Exception($"NodeId:{nodeId} 註冊 client node 失敗");
+                            }
+                            else
+                                Console.WriteLine($"NodeId:{nodeId} 初始化失敗");
+                        }
+
+                        if (success)
+                        {
+                            node.InstallService(appSettings.SymmetricServerPath);
+                            Thread.Sleep(100);
+                            node.StartService(appSettings.SymmetricServerPath);
+                            Thread.Sleep(100);
+
+                            appSettings.Version = node.Version;
+                            string contents = JsonConvert.SerializeObject(appSettings);
+                            string path = Directory.GetCurrentDirectory();
+                            path = Path.GetFullPath(path + "appsettings.json");
+                            File.WriteAllText(path, contents);
                         }
                         else
-                            Console.WriteLine("初始化失敗");
+                            Console.WriteLine($"NodeId:{nodeId} 設定配置失敗");
                     }
-
-                    if (success)
-                    {
-                        node.InstallService(appSettings.SymmetricServerPath);
-                        Thread.Sleep(100);
-                        node.StartService(appSettings.SymmetricServerPath);
-                        Thread.Sleep(100);
-
-                        appSettings.Version = node.Version;
-                        string contents = JsonConvert.SerializeObject(appSettings);
-                        string path = Directory.GetCurrentDirectory();
-                        path = Path.GetFullPath(path + "appsettings.json");
-                        File.WriteAllText(path, contents);
-                    }
-                    else
-                        Console.WriteLine("設定配置失敗");
                 }
             }
         }

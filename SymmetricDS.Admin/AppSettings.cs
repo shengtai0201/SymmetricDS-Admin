@@ -12,7 +12,7 @@ namespace SymmetricDS.Admin
 
         public string SymmetricServerPath { get; set; }
         public Databases Database { get; set; }
-        public int NodeId { get; set; }
+        public ICollection<int> NodeIds { get; set; }
         public int Version { get; set; }
     }
 }

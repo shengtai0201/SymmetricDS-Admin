@@ -21,9 +21,5 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         // Step 2.啟動服務
         void RunOnlyOnce(string path);
-        void InstallService(string path);
-        void UninstallService(string path);
-        void StopService(string path);
-        void StartService(string path);
     }
 }

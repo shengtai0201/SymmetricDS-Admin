@@ -34,5 +34,11 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         // Step 8.建立Trigger與Router的關連
         bool Relationship();
+
+        // Step 2.啟動服務
+        void InstallService(string path);
+        void UninstallService(string path);
+        void StopService(string path);
+        void StartService(string path);
     }
 }

@@ -183,33 +183,5 @@ namespace SymmetricDS.Admin.ConsoleApp
 
             DefaultExtensions.ProcessStart(fileName, $"-port {this.syncUrlPort}");
         }
-
-        public void StartService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "start");
-        }
-
-        public void InstallService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "install");
-        }
-
-        public void StopService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "stop");
-        }
-
-        public void UninstallService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "uninstall");
-        }
     }
 }

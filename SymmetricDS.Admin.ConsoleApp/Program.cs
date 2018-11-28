@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SymmetricDS.Admin.Master;
 using SymmetricDS.Admin.Master.Service;
 using System;
 using System.IO;
@@ -14,7 +13,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     class Program
     {
-        private static void Run(AppSettings appSettings, IInitializationService initialization, INodeSecurityService nodeSecurityService)
+        private static void Run(AppSettings appSettings, IInitializationService initialization, Master.INodeSecurityService nodeSecurityService)
         {
             foreach(var nodeId in appSettings.NodeIds)
             {
@@ -105,20 +104,31 @@ namespace SymmetricDS.Admin.ConsoleApp
             services.AddEntityFrameworkNpgsql().AddDbContext<Master.MasterDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
             services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Transient);
             services.AddOptions().Configure<AppSettings>(Configuration);
-            services.AddScoped<IInitializationService, InitializationService>();
-            services.AddScoped<INodeSecurityService, NodeSecurityService>();
 
             // build
             var serviceProvider = services.BuildServiceProvider();
-
             var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
             logger.LogInformation("Starting application");
 
             var appSettings = serviceProvider.GetService<IOptions<AppSettings>>().Value;
+            // add service(by databse type) here
+            switch (appSettings.Database)
+            {
+                case Databases.PostgreSQL:
+                    services.AddScoped<IInitializationService, NpgsqlInitializationService>();
+                    services.AddScoped<Master.INodeSecurityService, NpgsqlNodeSecurityService>();
+                    break;
+                case Databases.SQLServer:
+                    services.AddScoped<IInitializationService, SqlInitializationService>();
+                    services.AddScoped<Master.INodeSecurityService, SqlNodeSecurityService>();
+                    break;
+            }
+            serviceProvider = services.BuildServiceProvider();
+
             if (appSettings.SymmetricServerPath.Contains(' '))
                 throw new Exception("應用程式目錄不可有空白");
             var initialization = serviceProvider.GetService<IInitializationService>();
-            var nodeSecurityService = serviceProvider.GetService<INodeSecurityService>();
+            var nodeSecurityService = serviceProvider.GetService<Master.INodeSecurityService>();
             Run(appSettings, initialization, nodeSecurityService);
 
             logger.LogInformation("All done!");

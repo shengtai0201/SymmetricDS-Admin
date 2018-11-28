@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
-    public class InitializationService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, IInitializationService
+    public class NpgsqlInitializationService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, IInitializationService
     {
         private readonly Databases database;
         private readonly MasterDbContext masterDbContext;
         private readonly ServerDbContext serverDbContext;
 
-        public InitializationService(MasterDbContext masterDbContext, ServerDbContext serverDbContext, IOptions<AppSettings> options) : base(options.Value, masterDbContext)
+        public NpgsqlInitializationService(MasterDbContext masterDbContext, ServerDbContext serverDbContext, IOptions<AppSettings> options) : base(options.Value, masterDbContext)
         {
             this.database = options.Value.Database;
             this.masterDbContext = masterDbContext;

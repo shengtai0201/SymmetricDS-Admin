@@ -8,9 +8,9 @@ using System.Text;
 
 namespace SymmetricDS.Admin.Master.Service
 {
-    public class NodeSecurityService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, INodeSecurityService
+    public class SqlNodeSecurityService : SqlRepository<MasterDbContext, ConnectionStrings>, INodeSecurityService
     {
-        public NodeSecurityService(IOptions<AppSettings> options, MasterDbContext dbContext) : base(options.Value, dbContext) { }
+        public SqlNodeSecurityService(IOptions<AppSettings> options, MasterDbContext dbContext) : base(options.Value, dbContext) { }
 
         public bool CheckRegister(ICollection<string> nodeIds)
         {

@@ -7,7 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 		SymPostgreSQL.sql = SymPostgreSQL.sql
-		SymSQLServer.sql = SymSQLServer.sql
 		TextFile1.txt = TextFile1.txt
 	EndProjectSection
 EndProject
@@ -21,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.Data", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.ConsoleApp", "SymmetricDS.Admin.ConsoleApp\SymmetricDS.Admin.ConsoleApp.csproj", "{1DE07CF7-C04B-4992-B92C-7744C4188D44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymmetricDS.Admin.Tests", "SymmetricDS.Admin.Tests\SymmetricDS.Admin.Tests.csproj", "{1F5E95CE-FB4A-4514-A06E-66D760065C5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymmetricDS.Admin.Tests", "SymmetricDS.Admin.Tests\SymmetricDS.Admin.Tests.csproj", "{1F5E95CE-FB4A-4514-A06E-66D760065C5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -106,7 +106,6 @@ namespace SymmetricDS.Admin.ConsoleApp
             return success;
         }
 
-        //static ILoggerFactory LoggerFactory { get; set; }
         static IConfigurationRoot Configuration { get; set; }
 
         static void Main(string[] args)
@@ -116,7 +115,6 @@ namespace SymmetricDS.Admin.ConsoleApp
             var builder = new ConfigurationBuilder().SetBasePath(Path.Combine(AppContext.BaseDirectory)).AddJsonFile("appsettings.json", true, true);
             Configuration = builder.Build();
 
-            //LoggerFactory = new LoggerFactory().AddConsole(Configuration.GetSection("Logging")).AddDebug();
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
@@ -126,7 +124,6 @@ namespace SymmetricDS.Admin.ConsoleApp
 
             // build
             var serviceProvider = services.BuildServiceProvider();
-            //var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger<Program>();
             Log.Information("Starting application");
 
             string connectionString = Configuration.GetConnectionString("DefaultConnection");

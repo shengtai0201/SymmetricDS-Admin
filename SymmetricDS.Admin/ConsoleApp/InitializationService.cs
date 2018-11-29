@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Serilog;
 using Shengtai;
 using SymmetricDS.Admin.Master;
 using System;
@@ -56,7 +57,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }
@@ -143,7 +147,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }
@@ -187,7 +194,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch(Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }
@@ -236,7 +246,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }
@@ -288,7 +301,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }
@@ -341,7 +357,10 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch { }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+            }
 
             return result;
         }

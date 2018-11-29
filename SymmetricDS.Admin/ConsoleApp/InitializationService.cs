@@ -29,7 +29,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             var oldChannels = masterDbContext.SymChannel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
             var newChannels = serverDbContext.Channel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
-            
+
             foreach (var channel in newChannels)
             {
                 if (!oldChannels.ContainsKey(channel.Key))
@@ -207,7 +207,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 masterDbContext.SaveChanges();
                 result = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 LogException(nameof(NodeGroups), e);
             }
@@ -490,6 +490,13 @@ namespace SymmetricDS.Admin.ConsoleApp
             string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
 
             DefaultExtensions.ProcessStart(fileName, "uninstall");
+        }
+
+        public static void RunOnlyOnce(string path, string syncUrlPort)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym.bat");
+
+            DefaultExtensions.ProcessStart(fileName, $"--port {syncUrlPort} --server");
         }
     }
 }

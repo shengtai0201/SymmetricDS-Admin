@@ -104,5 +104,10 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             InitializationService.UninstallService(path);
         }
+
+        public void RunOnlyOnce(string path, string syncUrlPort)
+        {
+            InitializationService.RunOnlyOnce(path, syncUrlPort);
+        }
     }
 }

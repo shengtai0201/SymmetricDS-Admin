@@ -40,5 +40,6 @@ namespace SymmetricDS.Admin.ConsoleApp
         void UninstallService(string path);
         void StopService(string path);
         void StartService(string path);
+        void RunOnlyOnce(string path, string syncUrlPort);
     }
 }

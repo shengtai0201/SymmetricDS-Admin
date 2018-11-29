@@ -177,11 +177,9 @@ namespace SymmetricDS.Admin.ConsoleApp
             return null;
         }
 
-        public void RunOnlyOnce(string path)
+        public void RunOnlyOnce(string path, IInitializationService initialization)
         {
-            string fileName = Path.GetFullPath(path + @"bin\sym.bat");
-
-            DefaultExtensions.ProcessStart(fileName, $"-port {this.syncUrlPort}");
+            initialization.RunOnlyOnce(path, this.syncUrlPort);
         }
     }
 }

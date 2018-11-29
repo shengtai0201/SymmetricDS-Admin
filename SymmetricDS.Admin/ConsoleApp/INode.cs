@@ -19,7 +19,6 @@ namespace SymmetricDS.Admin.ConsoleApp
         bool CopyTo(string path);
         bool Write(string path);
 
-        // Step 2.啟動服務
-        void RunOnlyOnce(string path);
+        void RunOnlyOnce(string path, IInitializationService initialization);
     }
 }

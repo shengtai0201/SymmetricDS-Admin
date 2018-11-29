@@ -12,11 +12,24 @@ namespace SymmetricDS.Admin.ConsoleApp
 {
     internal static class InitializationService
     {
+        private static void LogException(string methodName, Exception e, StringBuilder messageBuilder = null)
+        {
+            if (messageBuilder == null)
+                messageBuilder = new StringBuilder();
+
+            messageBuilder.AppendLine(e.Message);
+
+            if (e.InnerException != null)
+                LogException(methodName, e.InnerException, messageBuilder);
+            else
+                Log.Error($"{methodName}: {messageBuilder.ToString()}");
+        }
+
         public static bool Channel(MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
         {
             var oldChannels = masterDbContext.SymChannel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
             var newChannels = serverDbContext.Channel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
-
+            
             foreach (var channel in newChannels)
             {
                 if (!oldChannels.ContainsKey(channel.Key))
@@ -59,7 +72,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(Channel), e);
             }
 
             return result;
@@ -149,7 +162,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(Node), e);
             }
 
             return result;
@@ -196,7 +209,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch(Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(NodeGroups), e);
             }
 
             return result;
@@ -248,7 +261,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(Relationship), e);
             }
 
             return result;
@@ -303,7 +316,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(Router), e);
             }
 
             return result;
@@ -359,7 +372,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Log.Error(e.Message);
+                LogException(nameof(SynchronizationMethod), e);
             }
 
             return result;
@@ -423,7 +436,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                LogException(nameof(Triggers), e);
             }
 
             return result;

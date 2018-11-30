@@ -19,11 +19,6 @@ namespace SymmetricDS.Admin.ConsoleApp
             bool success = appSettings.Nodes.Count > 0;
             if (success)
             {
-                //initialization.StopService(appSettings.SymmetricServerPath);
-                //Thread.Sleep(100);
-                //initialization.UninstallService(appSettings.SymmetricServerPath);
-                //Thread.Sleep(100);
-
                 foreach (var n in appSettings.Nodes)
                 {
                     var node = initialization.GetNode(n.Id);
@@ -97,14 +92,6 @@ namespace SymmetricDS.Admin.ConsoleApp
                         node.RunOnlyOnce(appSettings.SymmetricServerPath, initialization);
                 }
             }
-
-            //if (success)
-            //{
-            //    //initialization.InstallService(appSettings.SymmetricServerPath);
-            //    //Thread.Sleep(100);
-            //    //initialization.StartService(appSettings.SymmetricServerPath);
-            //    //Thread.Sleep(100);
-            //}
 
             return success;
         }

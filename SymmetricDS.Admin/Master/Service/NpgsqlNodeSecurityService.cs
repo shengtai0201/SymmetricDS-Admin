@@ -11,11 +11,18 @@ namespace SymmetricDS.Admin.Master.Service
 {
     public class NpgsqlNodeSecurityService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, INodeSecurityService
     {
-        public NpgsqlNodeSecurityService(IOptions<AppSettings> options, DbContextOptions<MasterDbContext> masterDbContextOptions) : base(options.Value, new MasterDbContext(masterDbContextOptions, options)) { }
+        private readonly DbContextOptions<MasterDbContext> masterDbContextOptions;
+        private readonly IOptions<AppSettings> options;
+
+        public NpgsqlNodeSecurityService(IOptions<AppSettings> options, DbContextOptions<MasterDbContext> masterDbContextOptions) : base(options.Value, new MasterDbContext(masterDbContextOptions, options))
+        {
+            this.masterDbContextOptions = masterDbContextOptions;
+            this.options = options;
+        }
 
         public bool CheckRegister(ICollection<string> nodeIds)
         {
-            return NodeSecurityService.CheckRegister(nodeIds, this.DbContext);
+            return NodeSecurityService.CheckRegister(nodeIds, new MasterDbContext(this.masterDbContextOptions, this.options));
         }
     }
 }

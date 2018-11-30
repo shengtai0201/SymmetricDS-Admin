@@ -18,17 +18,19 @@ namespace SymmetricDS.Admin.ConsoleApp
         private readonly Databases database;
         private readonly DbContextOptions<MasterDbContext> masterDbContextOptions;
         private readonly DbContextOptions<ServerDbContext> serverDbContextOptions;
+        private readonly IOptions<AppSettings> options;
 
         public NpgsqlInitializationService(DbContextOptions<MasterDbContext> masterDbContextOptions, DbContextOptions<ServerDbContext> serverDbContextOptions, IOptions<AppSettings> options) : base(options.Value, new MasterDbContext(masterDbContextOptions, options))
         {
             this.database = options.Value.Database;
             this.masterDbContextOptions = masterDbContextOptions;
             this.serverDbContextOptions = serverDbContextOptions;
+            this.options = options;
         }
 
         public bool Channel()
         {
-            return InitializationService.Channel(this.masterDbContext, this.serverDbContext);
+            return InitializationService.Channel(new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public void CreateTables(string path, IConfiguration configuration)
@@ -38,32 +40,32 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         public bool Node(INode node)
         {
-            return InitializationService.Node(node, this.masterDbContext);
+            return InitializationService.Node(node, new MasterDbContext(this.masterDbContextOptions, this.options));
         }
 
         public bool NodeGroups(INode node)
         {
-            return InitializationService.NodeGroups(node, this.masterDbContext, this.serverDbContext);
+            return InitializationService.NodeGroups(node, new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public bool Relationship()
         {
-            return InitializationService.Relationship(this.masterDbContext, this.serverDbContext);
+            return InitializationService.Relationship(new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public bool Router()
         {
-            return InitializationService.Router(this.masterDbContext, this.serverDbContext);
+            return InitializationService.Router(new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public bool SynchronizationMethod(INode node)
         {
-            return InitializationService.SynchronizationMethod(node, this.masterDbContext, this.serverDbContext);
+            return InitializationService.SynchronizationMethod(node, new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public bool Triggers()
         {
-            return InitializationService.Triggers(this.masterDbContext, this.serverDbContext);
+            return InitializationService.Triggers(new MasterDbContext(this.masterDbContextOptions, this.options), new ServerDbContext(this.serverDbContextOptions));
         }
 
         public Node GetNode(int nodeId)

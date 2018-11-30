@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Serilog;
 using SymmetricDS.Admin.Master.Service;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,26 +18,29 @@ namespace SymmetricDS.Admin.ConsoleApp
     {
         private static bool Run(AppSettings appSettings, IInitializationService initialization, Master.INodeSecurityService nodeSecurityService)
         {
-            bool success = appSettings.Nodes.Count > 0;
-            if (success)
+            bool allSuccessful = appSettings.Nodes.Count > 0;
+            if (allSuccessful)
             {
-                Parallel.ForEach(appSettings.Nodes, n =>
+                var nodes = new List<Node>();
+                foreach(var n in appSettings.Nodes)
                 {
                     var node = initialization.GetNode(n.Id);
                     if (node == null)
                     {
-                        success = false;
+                        allSuccessful = false;
                         Console.WriteLine($"伺服器未登錄 NodeId:{n.Id} 資訊");
                     }
                     else
                     {
+                        nodes.Add(node);
+
                         if (node.Version == n.Version)
                             Console.WriteLine($"NodeId:{n.Id} 不須更新");
                         else
                         {
-                            success = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
+                            allSuccessful = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
 
-                            if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
+                            if (string.IsNullOrEmpty(node.RegistrationUrl) && allSuccessful)
                             {
                                 int check = 0;
 
@@ -44,59 +48,42 @@ namespace SymmetricDS.Admin.ConsoleApp
                                 do
                                 {
                                     check += 1;
-                                    success = initialization.CheckTables();
+                                    allSuccessful = initialization.CheckTables();
                                     Thread.Sleep(1000);
-                                } while (!success && check < 3);
-                                if (!success)
+                                } while (!allSuccessful && check < 3);
+                                if (!allSuccessful)
                                     throw new Exception($"NodeId:{n.Id} 資料表處理失敗，有可能是資料庫 pg_hba.conf 設定錯誤");
 
-                                success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
+                                allSuccessful = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
                                     initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
                                     initialization.Router() && initialization.Relationship();
 
-                                if (success)
+                                if (allSuccessful)
                                 {
                                     check = 0;
                                     var nodeIds = node.MasterNode.Register(appSettings.SymmetricServerPath, node);
                                     do
                                     {
                                         check += 1;
-                                        success = nodeSecurityService.CheckRegister(nodeIds);
+                                        allSuccessful = nodeSecurityService.CheckRegister(nodeIds);
                                         Thread.Sleep(1000);
-                                    } while (!success && check < 3);
-                                    if (!success)
+                                    } while (!allSuccessful && check < 3);
+                                    if (!allSuccessful)
                                         throw new Exception($"NodeId:{n.Id} 註冊 client node 失敗");
                                 }
                                 else
                                     Console.WriteLine($"NodeId:{n.Id} 初始化失敗");
                             }
 
-                            if (success)
-                            {
+                            if (allSuccessful)
                                 n.Version = node.Version;
-                                //string contents = JsonConvert.SerializeObject(appSettings);
-                                //string path = Directory.GetCurrentDirectory();
-                                //path = Path.GetFullPath(path + "appsettings.json");
-
-                                //try
-                                //{
-                                //    File.WriteAllText(path, contents);
-                                //}
-                                //catch
-                                //{
-                                //    success = false;
-                                //}
-                            }
                             else
                                 Console.WriteLine($"NodeId:{n.Id} 設定配置失敗");
                         }
                     }
+                }
 
-                    if (success)
-                        node.RunOnlyOnce(appSettings.SymmetricServerPath, initialization);
-                });
-
-                if (success)
+                if (allSuccessful)
                 {
                     string contents = JsonConvert.SerializeObject(appSettings);
                     string path = Directory.GetCurrentDirectory();
@@ -108,88 +95,15 @@ namespace SymmetricDS.Admin.ConsoleApp
                     }
                     catch
                     {
-                        success = false;
+                        allSuccessful = false;
                     }
+
+                    if (allSuccessful)
+                        Parallel.ForEach(nodes, n => n.RunOnlyOnce(appSettings.SymmetricServerPath, initialization));
                 }
-
-                //foreach (var n in appSettings.Nodes)
-                //{
-                //    var node = initialization.GetNode(n.Id);
-                //    if (node == null)
-                //    {
-                //        success = false;
-                //        Console.WriteLine($"伺服器未登錄 NodeId:{n.Id} 資訊");
-                //    }
-                //    else
-                //    {
-                //        if (node.Version == n.Version)
-                //            Console.WriteLine($"NodeId:{n.Id} 不須更新");
-                //        else
-                //        {
-                //            success = node.CopyTo(appSettings.SymmetricServerPath) && node.Write(appSettings.SymmetricServerPath);
-
-                //            if (string.IsNullOrEmpty(node.RegistrationUrl) && success)
-                //            {
-                //                int check = 0;
-
-                //                initialization.CreateTables(appSettings.SymmetricServerPath, node);
-                //                do
-                //                {
-                //                    check += 1;
-                //                    success = initialization.CheckTables();
-                //                    Thread.Sleep(1000);
-                //                } while (!success && check < 3);
-                //                if (!success)
-                //                    throw new Exception($"NodeId:{n.Id} 資料表處理失敗，有可能是資料庫 pg_hba.conf 設定錯誤");
-
-                //                success = initialization.NodeGroups(node) && initialization.SynchronizationMethod(node) &&
-                //                    initialization.Node(node) && initialization.Channel() && initialization.Triggers() &&
-                //                    initialization.Router() && initialization.Relationship();
-
-                //                if (success)
-                //                {
-                //                    check = 0;
-                //                    var nodeIds = node.MasterNode.Register(appSettings.SymmetricServerPath, node);
-                //                    do
-                //                    {
-                //                        check += 1;
-                //                        success = nodeSecurityService.CheckRegister(nodeIds);
-                //                        Thread.Sleep(1000);
-                //                    } while (!success && check < 3);
-                //                    if (!success)
-                //                        throw new Exception($"NodeId:{n.Id} 註冊 client node 失敗");
-                //                }
-                //                else
-                //                    Console.WriteLine($"NodeId:{n.Id} 初始化失敗");
-                //            }
-
-                //            if (success)
-                //            {
-                //                n.Version = node.Version;
-                //                string contents = JsonConvert.SerializeObject(appSettings);
-                //                string path = Directory.GetCurrentDirectory();
-                //                path = Path.GetFullPath(path + "appsettings.json");
-
-                //                try
-                //                {
-                //                    File.WriteAllText(path, contents);
-                //                }
-                //                catch
-                //                {
-                //                    success = false;
-                //                }
-                //            }
-                //            else
-                //                Console.WriteLine($"NodeId:{n.Id} 設定配置失敗");
-                //        }
-                //    }
-
-                //    if (success)
-                //        node.RunOnlyOnce(appSettings.SymmetricServerPath, initialization);
-                //}
             }
 
-            return success;
+            return allSuccessful;
         }
 
         static IConfigurationRoot Configuration { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shengtai;
 using Shengtai.Options;
 using System;
@@ -10,7 +11,7 @@ namespace SymmetricDS.Admin.Master.Service
 {
     public class NpgsqlNodeSecurityService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, INodeSecurityService
     {
-        public NpgsqlNodeSecurityService(IOptions<AppSettings> options, MasterDbContext dbContext) : base(options.Value, dbContext) { }
+        public NpgsqlNodeSecurityService(IOptions<AppSettings> options, DbContextOptions<MasterDbContext> masterDbContextOptions) : base(options.Value, new MasterDbContext(masterDbContextOptions, options)) { }
 
         public bool CheckRegister(ICollection<string> nodeIds)
         {

@@ -19,11 +19,11 @@ namespace SymmetricDS.Admin.ConsoleApp
         private readonly MasterDbContext masterDbContext;
         private readonly ServerDbContext serverDbContext;
 
-        public SqlInitializationService(MasterDbContext masterDbContext, ServerDbContext serverDbContext, IOptions<AppSettings> options) : base(options.Value, masterDbContext)
+        public SqlInitializationService(DbContextOptions<MasterDbContext> masterDbContextOptions, DbContextOptions<ServerDbContext> serverDbContextOptions, IOptions<AppSettings> options) : base(options.Value, new MasterDbContext(masterDbContextOptions, options))
         {
             this.database = options.Value.Database;
-            this.masterDbContext = masterDbContext;
-            this.serverDbContext = serverDbContext;
+            this.masterDbContext = this.DbContext;
+            this.serverDbContext = new ServerDbContext(serverDbContextOptions);
         }
 
         public bool Channel()

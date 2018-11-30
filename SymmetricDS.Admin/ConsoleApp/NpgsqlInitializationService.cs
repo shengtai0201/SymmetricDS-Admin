@@ -16,14 +16,14 @@ namespace SymmetricDS.Admin.ConsoleApp
     public class NpgsqlInitializationService : NpgsqlRepository<MasterDbContext, ConnectionStrings>, IInitializationService
     {
         private readonly Databases database;
-        private readonly MasterDbContext masterDbContext;
-        private readonly ServerDbContext serverDbContext;
+        private readonly DbContextOptions<MasterDbContext> masterDbContextOptions;
+        private readonly DbContextOptions<ServerDbContext> serverDbContextOptions;
 
-        public NpgsqlInitializationService(MasterDbContext masterDbContext, ServerDbContext serverDbContext, IOptions<AppSettings> options) : base(options.Value, masterDbContext)
+        public NpgsqlInitializationService(DbContextOptions<MasterDbContext> masterDbContextOptions, DbContextOptions<ServerDbContext> serverDbContextOptions, IOptions<AppSettings> options) : base(options.Value, new MasterDbContext(masterDbContextOptions, options))
         {
             this.database = options.Value.Database;
-            this.masterDbContext = masterDbContext;
-            this.serverDbContext = serverDbContext;
+            this.masterDbContextOptions = masterDbContextOptions;
+            this.serverDbContextOptions = serverDbContextOptions;
         }
 
         public bool Channel()
@@ -68,7 +68,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         public Node GetNode(int nodeId)
         {
-            return InitializationService.GetNode(nodeId, this.serverDbContext, this.database);
+            return InitializationService.GetNode(nodeId, new ServerDbContext(this.serverDbContextOptions), this.database);
         }
 
         public bool CheckTables()

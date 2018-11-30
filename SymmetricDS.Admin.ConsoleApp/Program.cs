@@ -87,7 +87,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 {
                     string contents = JsonConvert.SerializeObject(appSettings);
                     string path = Directory.GetCurrentDirectory();
-                    path = Path.GetFullPath(path + "appsettings.json");
+                    path = Path.GetFullPath(path + "\\appsettings.json");
 
                     try
                     {

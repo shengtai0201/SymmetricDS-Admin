@@ -1,5 +1,0 @@
-http://kenny-on-rails.blogspot.com/2015/05/symmetricds_28.html
-
-Scaffold-DbContext "Server=.;Database=Sym;Trusted_Connection=True;User Id=sa;Password=p@$$w0rd;" Microsoft.EntityFrameworkCore.SqlServer -o Server -Context ServerDbContext
-Scaffold-DbContext "Server=localhost;Port=5432;Database=Sym;User Id=postgres;Password=p@$$w0rd;Pooling=true;MinPoolSize=1;MaxPoolSize=20;Persist Security Info=true;" Npgsql.EntityFrameworkCore.PostgreSQL -o Server -Context ServerDbContext
-Scaffold-DbContext "Host=127.0.0.1;Database=Sym;Username=postgres;port=5432" Npgsql.EntityFrameworkCore.PostgreSQL -o Server -Context ServerDbContext

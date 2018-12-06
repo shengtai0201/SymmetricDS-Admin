@@ -44,7 +44,7 @@ namespace SymmetricDS.Admin.WebApplication
 
             services.AddMvc()
                 .AddJsonOptions(o => o.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = null })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddOptions().Configure<AppSettings>(this.Configuration);
 

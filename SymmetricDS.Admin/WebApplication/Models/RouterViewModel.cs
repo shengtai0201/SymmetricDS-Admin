@@ -1,9 +1,6 @@
 ﻿using Shengtai;
 using SymmetricDS.Admin.Server;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace SymmetricDS.Admin.WebApplication.Models
 {
@@ -21,7 +18,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public NodeGroupViewModel TargetNodeGroup { get; set; }
         public NodeViewModel TargetNode { get; set; }
 
-        protected override RouterViewModel Build(Router entity)
+        protected override RouterViewModel Build(Router entity, object args = null)
         {
             this.Project = ProjectViewModel.NewInstance(entity.Project);
             this.SourceNodeGroup = NodeGroupViewModel.NewInstance(entity.SourceNodeGroup);

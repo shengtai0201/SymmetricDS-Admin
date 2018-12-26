@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shengtai;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.Server;
 using SymmetricDS.Admin.WebApplication.Models;
+using System.Diagnostics;
 
 namespace SymmetricDS.Admin.WebApplication.Controllers
 {
@@ -19,7 +15,7 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         private readonly IChannelService channelService;
         private readonly ITriggerService triggerService;
 
-        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService, INodeService nodeService, 
+        public HomeController(IProjectService projectService, INodeGroupService nodeGroupService, INodeService nodeService,
             IChannelService channelService, ITriggerService triggerService)
         {
             this.projectService = projectService;
@@ -60,10 +56,11 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         }
 
         #region Project x GroupNode x Node
+
         [HttpPost]
         public IActionResult ReadDatabaseTypes()
         {
-            var data = DefaultExtensions.GetEnumDictionary<Databases>();
+            var data = Extensions.GetEnumDictionary<Databases>();
             return Json(data);
         }
 
@@ -72,17 +69,21 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         {
             return View();
         }
-        #endregion
+
+        #endregion Project x GroupNode x Node
 
         #region Channel x Trigger
+
         [HttpGet]
         public IActionResult ChannelTriggers()
         {
             return View();
         }
-        #endregion
+
+        #endregion Channel x Trigger
 
         #region Router, Trigger
+
         [HttpPost]
         public IActionResult ReadChannels()
         {
@@ -123,6 +124,7 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
         {
             return View();
         }
-        #endregion
+
+        #endregion Router, Trigger
     }
 }

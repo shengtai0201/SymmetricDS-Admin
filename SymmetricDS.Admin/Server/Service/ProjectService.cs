@@ -1,23 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shengtai;
-using Shengtai.Options;
+using Shengtai.Data;
+using Shengtai.Web;
 using Shengtai.Web.Telerik;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ProjectService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ProjectViewModel, Project>, IProjectService
+    public class ProjectService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+        IApiService<int, ProjectViewModel, Project, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IProjectService
     {
         private readonly ILogger<NodeService> logger;
-        public ProjectService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<NodeService> logger) : base(options.Value, dbContext)
+
+        public ProjectService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client, ILogger<NodeService> logger) : base(options.Value, dbContext, client)
         {
             this.logger = logger;
         }
@@ -53,7 +55,7 @@ namespace SymmetricDS.Admin.Server.Service
                 await this.DbContext.SaveChangesAsync();
                 result = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogCritical(e.Message);
             }
@@ -66,7 +68,7 @@ namespace SymmetricDS.Admin.Server.Service
             return await this.DbContext.Project.SingleOrDefaultAsync(p => p.Id == key);
         }
 
-        public Task<IDataSourceResponse<ProjectViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<ProjectViewModel>> ReadAsync(IDataSourceRequest request)
         {
             var responseData = this.DbContext.Project.Select(p => p);
 
@@ -91,7 +93,7 @@ namespace SymmetricDS.Admin.Server.Service
         {
             ICollection<ProjectViewModel> projects = new List<ProjectViewModel>();
 
-           var dataCollection = this.DbContext.Project.Select(p => p).ToList();
+            var dataCollection = this.DbContext.Project.Select(p => p).ToList();
             foreach (var data in dataCollection)
                 projects.Add(ProjectViewModel.NewInstance(data));
 

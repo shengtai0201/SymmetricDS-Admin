@@ -1,9 +1,6 @@
 ﻿using Shengtai;
 using SymmetricDS.Admin.Server;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace SymmetricDS.Admin.WebApplication.Models
 {
@@ -32,7 +29,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public ChannelViewModel Channel { get; set; }
         public TriggerViewModel Trigger { get; set; }
 
-        protected override TriggerRouterViewModel Build(TriggerRouter entity)
+        protected override TriggerRouterViewModel Build(TriggerRouter entity, object args = null)
         {
             this.Router = RouterViewModel.NewInstance(entity.Router);
 

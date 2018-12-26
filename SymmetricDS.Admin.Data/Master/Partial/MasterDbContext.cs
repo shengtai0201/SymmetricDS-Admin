@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SymmetricDS.Admin.Master
 {
     public partial class MasterDbContext : DbContext
     {
         private readonly Databases database;
+
         public MasterDbContext(DbContextOptions<MasterDbContext> dbContextOptions, IOptions<AppSettings> appSettingsOptions) : base(dbContextOptions)
         {
             this.database = appSettingsOptions.Value.Database;

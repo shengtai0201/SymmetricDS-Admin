@@ -1,23 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shengtai;
-using Shengtai.Options;
+using Shengtai.Data;
+using Shengtai.Web;
 using Shengtai.Web.Telerik;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class RouterService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, RouterViewModel, Router>
+    public class RouterService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+        IApiService<int, RouterViewModel, Router, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>
     {
         private readonly ILogger<RouterService> logger;
-        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext, ILogger<RouterService> logger) : base(options.Value, dbContext)
+
+        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client, ILogger<RouterService> logger) : base(options.Value, dbContext, client)
         {
             this.logger = logger;
         }
@@ -40,7 +41,7 @@ namespace SymmetricDS.Admin.Server.Service
                 model.Id = router.Id;
                 result = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 this.logger.LogCritical(e.Message);
             }
@@ -72,7 +73,7 @@ namespace SymmetricDS.Admin.Server.Service
             return await this.DbContext.Router.SingleOrDefaultAsync(r => r.Id == key);
         }
 
-        public Task<IDataSourceResponse<RouterViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<RouterViewModel>> ReadAsync(IDataSourceRequest request)
         {
             var responseData = this.DbContext.Router.Include("Project").Include("SourceNodeGroup").Include("TargetNode").Select(r => r);
 

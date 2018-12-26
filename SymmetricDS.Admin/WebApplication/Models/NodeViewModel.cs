@@ -1,11 +1,7 @@
 ﻿using Shengtai;
 using SymmetricDS.Admin.Server;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.WebApplication.Models
 {
@@ -34,7 +30,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
         public string NodePassword { get; set; }
         public int Version { get; set; }
 
-        protected override NodeViewModel Build(Node entity)
+        protected override NodeViewModel Build(Node entity, object args = null)
         {
             this.NodeGroup = NodeGroupViewModel.NewInstance(entity.NodeGroup);
             this.DatabaseType = entity.DatabaseType.GetEnumKeyValue();

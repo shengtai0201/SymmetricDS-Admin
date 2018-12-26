@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.Server;
 using SymmetricDS.Admin.WebApplication.Models;
+using System.Security.Principal;
 
 namespace SymmetricDS.Admin.WebApplication.Controllers
 {
@@ -14,6 +10,8 @@ namespace SymmetricDS.Admin.WebApplication.Controllers
     [ApiController]
     public class TriggerRoutersController : ApiController<string, TriggerRouterViewModel, TriggerRouter>
     {
-        public TriggerRoutersController(IApiService<string, TriggerRouterViewModel, TriggerRouter> service) : base(service) { }
+        public TriggerRoutersController(IApiService<string, TriggerRouterViewModel, TriggerRouter, IPrincipal> service) : base(service)
+        {
+        }
     }
 }

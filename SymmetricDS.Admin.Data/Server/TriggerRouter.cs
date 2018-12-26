@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SymmetricDS.Admin.Server
+﻿namespace SymmetricDS.Admin.Server
 {
     public partial class TriggerRouter
     {

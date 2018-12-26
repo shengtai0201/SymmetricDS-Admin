@@ -1,41 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Shengtai;
+using Shengtai.Data;
 using SymmetricDS.Admin.Master;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 
-namespace SymmetricDS.Admin.ConsoleApp
+namespace SymmetricDS.Admin.ConsoleApp.Service
 {
-    internal static class InitializationService
+    public abstract class InitializationService : Repository<MasterDbContext, AppSettings, ConnectionStrings, IPrincipal>, IInitializationService
     {
-        private static void LogException(string methodName, Exception e, StringBuilder messageBuilder = null)
+        private readonly Databases database;
+        private readonly Server.IInitializationService serverInitializationService;
+
+        protected InitializationService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client,
+            Server.IInitializationService serverInitializationService) : base(options.Value, dbContext, client)
         {
-            if (messageBuilder == null)
-                messageBuilder = new StringBuilder();
-
-            messageBuilder.AppendLine(e.Message);
-
-            if (e.InnerException != null)
-                LogException(methodName, e.InnerException, messageBuilder);
-            else
-                Log.Error($"{methodName}: {messageBuilder.ToString()}");
+            this.database = options.Value.Database;
+            this.serverInitializationService = serverInitializationService;
         }
 
-        public static bool Channel(MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public bool Channel()
         {
-            var oldChannels = masterDbContext.SymChannel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
-            var newChannels = serverDbContext.Channel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
+            //var newChannels = serverDbContext.Channel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
+            var oldChannels = this.DbContext.SymChannel.Select(x => x).ToDictionary(x => x.ChannelId, x => x);
+            var newChannels = this.serverInitializationService.GetNewChannels();
 
             foreach (var channel in newChannels)
             {
                 if (!oldChannels.ContainsKey(channel.Key))
                 {
                     // 新增
-                    masterDbContext.SymChannel.Add(new SymChannel
+                    this.DbContext.SymChannel.Add(new SymChannel
                     {
                         ChannelId = channel.Value.ChannelId,
                         ProcessingOrder = 1,
@@ -60,37 +60,68 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newChannels.ContainsKey(channel.Key))
                 {
                     // 刪除
-                    masterDbContext.SymChannel.Remove(channel.Value);
+                    this.DbContext.SymChannel.Remove(channel.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(Channel), e);
+                Log.Error(e.InnerException(nameof(Channel)));
             }
 
             return result;
         }
 
-        public static void CreateTables(string path, IConfiguration configuration)
+        public abstract bool CheckTables();
+
+        public void CreateTables(string path, IConfiguration configuration)
         {
             string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
-            DefaultExtensions.ProcessStart(fileName, $"--engine {configuration.EngineName} create-sym-tables");
+            Extensions.ProcessStart(fileName, $"--engine {configuration.EngineName} create-sym-tables");
         }
 
-        public static bool Node(INode node, MasterDbContext masterDbContext)
+        public Node GetNode(int nodeId)
         {
-            var oldNode = masterDbContext.SymNode.SingleOrDefault(x => x.NodeId == node.ExternalId);
+            Node result = null;
+
+            //var node = serverDbContext.Node
+            //    .Include("NodeGroup").Include("NodeGroup.Router")
+            //    .Include("NodeGroup.Router.TargetNode").Include("NodeGroup.Router.TargetNode.NodeGroup")
+            //    .Include("Router.SourceNodeGroup.Node")
+            //    .SingleOrDefault(n => n.Id == nodeId);
+            var node = this.serverInitializationService.GetNode(nodeId);
+            if (node != null)
+            {
+                var projectId = node.NodeGroup.ProjectId;
+                var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == projectId);
+                if (router == null)
+                    result = new MasterNode(this.database, node);
+                else
+                    result = new Node(this.database, node);
+            }
+
+            return result;
+        }
+
+        public void InstallService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+            Extensions.ProcessStart(fileName, "install");
+        }
+
+        public bool Node(INode node)
+        {
+            var oldNode = this.DbContext.SymNode.SingleOrDefault(x => x.NodeId == node.ExternalId);
             if (oldNode == null)
             {
                 // 新增
-                masterDbContext.SymNode.Add(new SymNode
+                this.DbContext.SymNode.Add(new SymNode
                 {
                     NodeId = node.ExternalId,
                     NodeGroupId = node.GroupId,
@@ -105,16 +136,16 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
 
             // 刪除
-            var otherNodes = masterDbContext.SymNode.Where(x => x.NodeId != node.ExternalId).ToList();
+            var otherNodes = this.DbContext.SymNode.Where(x => x.NodeId != node.ExternalId).ToList();
             if (otherNodes.Count > 0)
-                masterDbContext.SymNode.RemoveRange(otherNodes);
+                this.DbContext.SymNode.RemoveRange(otherNodes);
 
             DateTime dateTimeNow = DateTime.Now;
-            var oldNodeSecurity = masterDbContext.SymNodeSecurity.SingleOrDefault(x => x.NodeId == node.ExternalId);
+            var oldNodeSecurity = this.DbContext.SymNodeSecurity.SingleOrDefault(x => x.NodeId == node.ExternalId);
             if (oldNodeSecurity == null)
             {
                 // 新增
-                masterDbContext.SymNodeSecurity.Add(new SymNodeSecurity
+                this.DbContext.SymNodeSecurity.Add(new SymNodeSecurity
                 {
                     NodeId = node.ExternalId,
                     NodePassword = node.Password,
@@ -135,50 +166,51 @@ namespace SymmetricDS.Admin.ConsoleApp
             }
 
             // 刪除
-            var otherNodeSecurities = masterDbContext.SymNodeSecurity.Where(x => x.NodeId != node.ExternalId).ToList();
+            var otherNodeSecurities = this.DbContext.SymNodeSecurity.Where(x => x.NodeId != node.ExternalId).ToList();
             if (otherNodeSecurities.Count > 0)
-                masterDbContext.SymNodeSecurity.RemoveRange(otherNodeSecurities);
+                this.DbContext.SymNodeSecurity.RemoveRange(otherNodeSecurities);
 
-            var oldNodeIdentity = masterDbContext.SymNodeIdentity.SingleOrDefault(x => x.NodeId == node.ExternalId);
+            var oldNodeIdentity = this.DbContext.SymNodeIdentity.SingleOrDefault(x => x.NodeId == node.ExternalId);
             if (oldNodeIdentity == null)
             {
                 // 新增
-                masterDbContext.SymNodeIdentity.Add(new SymNodeIdentity
+                this.DbContext.SymNodeIdentity.Add(new SymNodeIdentity
                 {
                     NodeId = node.ExternalId
                 });
             }
 
             // 刪除
-            var otherNodeIdentities = masterDbContext.SymNodeIdentity.Where(x => x.NodeId != node.ExternalId).ToList();
+            var otherNodeIdentities = this.DbContext.SymNodeIdentity.Where(x => x.NodeId != node.ExternalId).ToList();
             if (otherNodeIdentities.Count > 0)
-                masterDbContext.SymNodeIdentity.RemoveRange(otherNodeIdentities);
+                this.DbContext.SymNodeIdentity.RemoveRange(otherNodeIdentities);
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(Node), e);
+                Log.Error(e.InnerException(nameof(Node)));
             }
 
             return result;
         }
 
-        public static bool NodeGroups(INode node, MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public bool NodeGroups(INode node)
         {
-            var oldNodeGroups = masterDbContext.SymNodeGroup.Select(x => x).ToDictionary(x => x.NodeGroupId, x => x);
-            var newNodeGroups = serverDbContext.NodeGroup.Where(ng => ng.ProjectId == node.ProjectId).ToDictionary(x => x.NodeGroupId, x => x);
+            var oldNodeGroups = this.DbContext.SymNodeGroup.Select(x => x).ToDictionary(x => x.NodeGroupId, x => x);
+            //var newNodeGroups = serverDbContext.NodeGroup.Where(ng => ng.ProjectId == node.ProjectId).ToDictionary(x => x.NodeGroupId, x => x);
+            var newNodeGroups = this.serverInitializationService.GetNewNodeGroups(node.ProjectId);
 
             foreach (var nodeGroup in newNodeGroups)
             {
                 if (!oldNodeGroups.ContainsKey(nodeGroup.Key))
                 {
                     // 新增
-                    masterDbContext.SymNodeGroup.Add(new SymNodeGroup
+                    this.DbContext.SymNodeGroup.Add(new SymNodeGroup
                     {
                         NodeGroupId = nodeGroup.Value.NodeGroupId,
                         Description = nodeGroup.Value.Description
@@ -197,28 +229,29 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newNodeGroups.ContainsKey(nodeGroup.Key))
                 {
                     // 刪除
-                    masterDbContext.SymNodeGroup.Remove(nodeGroup.Value);
+                    this.DbContext.SymNodeGroup.Remove(nodeGroup.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(NodeGroups), e);
+                Log.Error(e.InnerException(nameof(NodeGroups)));
             }
 
             return result;
         }
 
-        public static bool Relationship(MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public bool Relationship()
         {
-            var oldTriggerRouters = masterDbContext.SymTriggerRouter.Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.TriggerId, x.RouterId), x => x);
-            var newTriggerRouters = serverDbContext.TriggerRouter.Include("Trigger").Include("Router").Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.Trigger.TriggerId, x.Router.RouterId), x => x);
+            var oldTriggerRouters = this.DbContext.SymTriggerRouter.Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.TriggerId, x.RouterId), x => x);
+            //var newTriggerRouters = serverDbContext.TriggerRouter.Include("Trigger").Include("Router").Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.Trigger.TriggerId, x.Router.RouterId), x => x);
+            var newTriggerRouters = this.serverInitializationService.GetNewTriggerRouters();
 
             DateTime dateTimeNow = DateTime.Now;
             foreach (var triggerRouter in newTriggerRouters)
@@ -226,7 +259,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!oldTriggerRouters.ContainsKey(triggerRouter.Key))
                 {
                     // 新增
-                    masterDbContext.SymTriggerRouter.Add(new SymTriggerRouter
+                    this.DbContext.SymTriggerRouter.Add(new SymTriggerRouter
                     {
                         TriggerId = triggerRouter.Value.Trigger.TriggerId,
                         RouterId = triggerRouter.Value.Router.RouterId,
@@ -249,28 +282,29 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newTriggerRouters.ContainsKey(triggerRouter.Key))
                 {
                     // 刪除
-                    masterDbContext.SymTriggerRouter.Remove(triggerRouter.Value);
+                    this.DbContext.SymTriggerRouter.Remove(triggerRouter.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(Relationship), e);
+                Log.Error(e.InnerException(nameof(Relationship)));
             }
 
             return result;
         }
 
-        public static bool Router(MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public bool Router()
         {
-            var oldRouters = masterDbContext.SymRouter.Select(x => x).ToDictionary(x => x.RouterId, x => x);
-            var newRouters = serverDbContext.Router.Include("SourceNodeGroup").Include("TargetNode.NodeGroup").Select(x => x).ToDictionary(x => x.RouterId, x => x);
+            var oldRouters = this.DbContext.SymRouter.Select(x => x).ToDictionary(x => x.RouterId, x => x);
+            //var newRouters = serverDbContext.Router.Include("SourceNodeGroup").Include("TargetNode.NodeGroup").Select(x => x).ToDictionary(x => x.RouterId, x => x);
+            var newRouters = this.serverInitializationService.GetNewRouters();
 
             DateTime dateTimeNow = DateTime.Now;
             foreach (var router in newRouters)
@@ -278,7 +312,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!oldRouters.ContainsKey(router.Key))
                 {
                     // 新增
-                    masterDbContext.SymRouter.Add(new SymRouter
+                    this.DbContext.SymRouter.Add(new SymRouter
                     {
                         RouterId = router.Value.RouterId,
                         SourceNodeGroupId = router.Value.SourceNodeGroup.NodeGroupId,
@@ -304,30 +338,49 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newRouters.ContainsKey(router.Key))
                 {
                     // 刪除
-                    masterDbContext.SymRouter.Remove(router.Value);
+                    this.DbContext.SymRouter.Remove(router.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(Router), e);
+                Log.Error(e.InnerException(nameof(Router)));
             }
 
             return result;
         }
 
-        public static bool SynchronizationMethod(INode node, MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public void RunOnlyOnce(string path, string syncUrlPort)
         {
-            var oldNodeGroupLinks = masterDbContext.SymNodeGroupLink.Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.SourceNodeGroupId, x.TargetNodeGroupId), x => x);
+            string fileName = Path.GetFullPath(path + @"bin\sym.bat");
+            Extensions.ProcessStart(fileName, $"--port {syncUrlPort} --server");
+        }
+
+        public void StartService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+            Extensions.ProcessStart(fileName, "start");
+        }
+
+        public void StopService(string path)
+        {
+            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
+            Extensions.ProcessStart(fileName, "stop");
+        }
+
+        public bool SynchronizationMethod(INode node)
+        {
+            var oldNodeGroupLinks = this.DbContext.SymNodeGroupLink.Select(x => x).ToDictionary(x => string.Format("[{0}][{1}]", x.SourceNodeGroupId, x.TargetNodeGroupId), x => x);
 
             var newNodeGroupLinks = new Dictionary<string, char>();
-            var newNodeGroupLinkDatas = serverDbContext.Router.Include("SourceNodeGroup").Include("TargetNode.NodeGroup").Where(x => x.ProjectId == node.ProjectId).ToList();
+            //var newNodeGroupLinkDatas = serverDbContext.Router.Include("SourceNodeGroup").Include("TargetNode.NodeGroup").Where(x => x.ProjectId == node.ProjectId).ToList();
+            var newNodeGroupLinkDatas = this.serverInitializationService.GetNewNodeGroupLinkDatas(node.ProjectId);
             foreach (var data in newNodeGroupLinkDatas)
             {
                 newNodeGroupLinks.Add(string.Format("[{0}][{1}]", data.SourceNodeGroup.NodeGroupId, data.TargetNode.NodeGroup.NodeGroupId), 'P');
@@ -340,7 +393,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 {
                     var values = nodeGroupLink.Key.Split(new char[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
                     // 新增
-                    masterDbContext.SymNodeGroupLink.Add(new SymNodeGroupLink
+                    this.DbContext.SymNodeGroupLink.Add(new SymNodeGroupLink
                     {
                         SourceNodeGroupId = values[0],
                         TargetNodeGroupId = values[1],
@@ -360,28 +413,29 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newNodeGroupLinks.ContainsKey(nodeGroupLink.Key))
                 {
                     // 刪除
-                    masterDbContext.SymNodeGroupLink.Remove(nodeGroupLink.Value);
+                    this.DbContext.SymNodeGroupLink.Remove(nodeGroupLink.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(SynchronizationMethod), e);
+                Log.Error(e.InnerException(nameof(SynchronizationMethod)));
             }
 
             return result;
         }
 
-        public static bool Triggers(MasterDbContext masterDbContext, Server.ServerDbContext serverDbContext)
+        public bool Triggers()
         {
-            var oldTriggers = masterDbContext.SymTrigger.Select(x => x).ToDictionary(x => x.TriggerId, x => x);
-            var newTriggers = serverDbContext.Trigger.Include("Channel").Select(x => x).ToDictionary(x => x.TriggerId, x => x);
+            var oldTriggers = this.DbContext.SymTrigger.Select(x => x).ToDictionary(x => x.TriggerId, x => x);
+            //var newTriggers = serverDbContext.Trigger.Include("Channel").Select(x => x).ToDictionary(x => x.TriggerId, x => x);
+            var newTriggers = this.serverInitializationService.GetNewTriggers();
 
             DateTime dateTimeNow = DateTime.Now;
             foreach (var trigger in newTriggers)
@@ -389,7 +443,7 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!oldTriggers.ContainsKey(trigger.Key))
                 {
                     // 新增
-                    masterDbContext.SymTrigger.Add(new SymTrigger
+                    this.DbContext.SymTrigger.Add(new SymTrigger
                     {
                         TriggerId = trigger.Value.TriggerId,
                         SourceTableName = trigger.Value.SourceTableName,
@@ -424,79 +478,28 @@ namespace SymmetricDS.Admin.ConsoleApp
                 if (!newTriggers.ContainsKey(trigger.Key))
                 {
                     // 刪除
-                    masterDbContext.SymTrigger.Remove(trigger.Value);
+                    this.DbContext.SymTrigger.Remove(trigger.Value);
                 }
             }
 
             bool result = false;
             try
             {
-                masterDbContext.SaveChanges();
+                this.DbContext.SaveChanges();
                 result = true;
             }
             catch (Exception e)
             {
-                LogException(nameof(Triggers), e);
+                Log.Error(e.InnerException(nameof(Triggers)));
             }
 
             return result;
         }
 
-        public static Node GetNode(int nodeId, Server.ServerDbContext serverDbContext, Databases database)
-        {
-            Node result = null;
-
-            var node = serverDbContext.Node
-                .Include("NodeGroup").Include("NodeGroup.Router")
-                .Include("NodeGroup.Router.TargetNode").Include("NodeGroup.Router.TargetNode.NodeGroup")
-                .Include("Router.SourceNodeGroup.Node")
-                .SingleOrDefault(n => n.Id == nodeId);
-            if (node != null)
-            {
-                var projectId = node.NodeGroup.ProjectId;
-                var router = node.NodeGroup.Router.SingleOrDefault(x => x.ProjectId == projectId);
-                if (router == null)
-                    result = new MasterNode(database, node);
-                else
-                    result = new Node(database, node);
-            }
-
-            return result;
-        }
-
-        public static void StartService(string path)
+        public void UninstallService(string path)
         {
             string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "start");
-        }
-
-        public static void InstallService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "install");
-        }
-
-        public static void StopService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "stop");
-        }
-
-        public static void UninstallService(string path)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym_service.bat");
-
-            DefaultExtensions.ProcessStart(fileName, "uninstall");
-        }
-
-        public static void RunOnlyOnce(string path, string syncUrlPort)
-        {
-            string fileName = Path.GetFullPath(path + @"bin\sym.bat");
-
-            DefaultExtensions.ProcessStart(fileName, $"--port {syncUrlPort} --server");
+            Extensions.ProcessStart(fileName, "uninstall");
         }
     }
 }

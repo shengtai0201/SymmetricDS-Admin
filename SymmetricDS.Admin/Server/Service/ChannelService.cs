@@ -1,21 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Shengtai;
-using Shengtai.Options;
+using Shengtai.Data;
+using Shengtai.Web;
 using Shengtai.Web.Telerik;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ChannelService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, ChannelViewModel, Channel>, IChannelService
+    public class ChannelService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+        IApiService<int, ChannelViewModel, Channel, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IChannelService
     {
-        public ChannelService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        public ChannelService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
+        {
+        }
 
         public async Task<bool> CreateAsync(ChannelViewModel model, IDataSource dataSource)
         {
@@ -76,7 +79,7 @@ namespace SymmetricDS.Admin.Server.Service
             return await this.DbContext.Channel.SingleOrDefaultAsync(p => p.Id == key);
         }
 
-        public Task<IDataSourceResponse<ChannelViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<ChannelViewModel>> ReadAsync(IDataSourceRequest request)
         {
             var responseData = this.DbContext.Channel.Select(c => c);
 

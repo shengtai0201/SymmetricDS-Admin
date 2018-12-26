@@ -1,0 +1,29 @@
+﻿using Microsoft.Extensions.Options;
+using Npgsql;
+using Shengtai.Data;
+using SymmetricDS.Admin.Master;
+
+namespace SymmetricDS.Admin.ConsoleApp.Service
+{
+    public class NpgsqlInitializationService : InitializationService
+    {
+        public NpgsqlInitializationService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client,
+            Server.IInitializationService serverInitializationService) : base(options, dbContext, client, serverInitializationService)
+        {
+        }
+
+        public override bool CheckTables()
+        {
+            string cmdText = @"SELECT COUNT(*)
+                FROM
+	                information_schema.tables
+                WHERE
+	                table_schema = 'public'
+	                AND table_type = 'BASE TABLE'
+	                AND TABLE_NAME LIKE'sym_%'";
+            var result = this.ExecuteScalar<NpgsqlConnection, NpgsqlCommand, NpgsqlParameter, int>(cmdText);
+
+            return result == 47;
+        }
+    }
+}

@@ -1,5 +1,3 @@
-using System;
-
 namespace SymmetricDS.Admin.WebApplication.Models
 {
     public class ErrorViewModel

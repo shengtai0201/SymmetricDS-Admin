@@ -1,21 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Shengtai;
-using Shengtai.Options;
+using Shengtai.Data;
+using Shengtai.Web;
 using Shengtai.Web.Telerik;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class NodeGroupService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, NodeGroupViewModel, NodeGroup>, INodeGroupService
+    public class NodeGroupService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+        IApiService<int, NodeGroupViewModel, NodeGroup, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, INodeGroupService
     {
-        public NodeGroupService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        public NodeGroupService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
+        {
+        }
 
         public async Task<bool> CreateAsync(NodeGroupViewModel model, IDataSource dataSource)
         {
@@ -80,7 +83,7 @@ namespace SymmetricDS.Admin.Server.Service
             return await this.DbContext.NodeGroup.SingleOrDefaultAsync(ng => ng.Id == key);
         }
 
-        public Task<IDataSourceResponse<NodeGroupViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<NodeGroupViewModel>> ReadAsync(IDataSourceRequest request)
         {
             var responseData = this.DbContext.NodeGroup.Include("Project").Select(ng => ng);
 

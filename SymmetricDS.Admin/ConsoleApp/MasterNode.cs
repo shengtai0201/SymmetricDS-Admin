@@ -1,18 +1,14 @@
-﻿using System;
+﻿using Shengtai;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Shengtai;
-using SymmetricDS.Admin.Master;
-using SymmetricDS.Admin.Server;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
     public class MasterNode : Node, IMaster
     {
         private readonly Server.Node node;
+
         public MasterNode(Databases database, Server.Node node) : base(database, node)
         {
             this.node = node;
@@ -40,7 +36,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         {
             string fileName = Path.GetFullPath(path + @"bin\symadmin.bat");
 
-            DefaultExtensions.ProcessStart(fileName, $"--engine {configuration.EngineName} open-registration {groupId} {externalId}");
+            Extensions.ProcessStart(fileName, $"--engine {configuration.EngineName} open-registration {groupId} {externalId}");
         }
     }
 }

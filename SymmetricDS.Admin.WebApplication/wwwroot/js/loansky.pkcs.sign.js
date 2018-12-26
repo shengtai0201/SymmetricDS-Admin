@@ -33,7 +33,6 @@ loansky.pkcs.sign = new function () {
 
     var postTarget, timeoutId;
     function makeSignature(httpObject, base64Strings, pin, slotDescription) {
-
         var selectedSlot = document.getElementById(slotDescription).value;
         if (pin == "" || pin == null || selectedSlot == "") {
             alert("PIN碼未填寫或讀卡機未選擇");

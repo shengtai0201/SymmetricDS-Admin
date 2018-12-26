@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace SymmetricDS.Admin.Master
 {
@@ -61,6 +59,7 @@ namespace SymmetricDS.Admin.Master
                 case Databases.PostgreSQL:
                     this.NpgsqlModelCreating(modelBuilder);
                     break;
+
                 case Databases.SQLServer:
                     this.SqlModelCreating(modelBuilder);
                     break;

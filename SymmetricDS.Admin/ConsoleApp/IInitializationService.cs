@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SymmetricDS.Admin.ConsoleApp
+﻿namespace SymmetricDS.Admin.ConsoleApp
 {
     public interface IInitializationService
     {
@@ -12,6 +6,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         // Step 1.對Database進行初始化
         void CreateTables(string path, IConfiguration configuration);
+
         bool CheckTables();
 
         // Step 2.寫入Node Group
@@ -37,9 +32,13 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         // Step 2.啟動服務
         void InstallService(string path);
+
         void UninstallService(string path);
+
         void StopService(string path);
+
         void StartService(string path);
+
         void RunOnlyOnce(string path, string syncUrlPort);
     }
 }

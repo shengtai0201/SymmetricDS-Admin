@@ -1,9 +1,6 @@
 ﻿using Shengtai;
 using SymmetricDS.Admin.Server;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace SymmetricDS.Admin.WebApplication.Models
 {
@@ -18,7 +15,7 @@ namespace SymmetricDS.Admin.WebApplication.Models
 
         public string SourceTableName { get; set; }
 
-        protected override TriggerViewModel Build(Trigger entity)
+        protected override TriggerViewModel Build(Trigger entity, object args = null)
         {
             this.Channel = ChannelViewModel.NewInstance(entity.Channel);
 

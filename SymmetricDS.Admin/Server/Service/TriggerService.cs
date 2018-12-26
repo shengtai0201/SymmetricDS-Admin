@@ -1,21 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Shengtai;
-using Shengtai.Options;
+using Shengtai.Data;
+using Shengtai.Web;
 using Shengtai.Web.Telerik;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class TriggerService : NpgsqlRepository<ServerDbContext, ConnectionStrings>, IApiService<int, TriggerViewModel, Trigger>, ITriggerService
+    public class TriggerService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+        IApiService<int, TriggerViewModel, Trigger, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, ITriggerService
     {
-        public TriggerService(IOptions<AppSettings> options, ServerDbContext dbContext) : base(options.Value, dbContext) { }
+        public TriggerService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
+        {
+        }
 
         public async Task<bool> CreateAsync(TriggerViewModel model, IDataSource dataSource)
         {
@@ -62,7 +65,7 @@ namespace SymmetricDS.Admin.Server.Service
         {
             ICollection<TriggerViewModel> triggers = new List<TriggerViewModel>();
 
-            if(serverFiltering != null)
+            if (serverFiltering != null)
             {
                 var filter = serverFiltering.FilterCollection.SingleOrDefault(f => f.Field == "Id");
                 int channelId = Convert.ToInt32(filter.Value);
@@ -80,7 +83,7 @@ namespace SymmetricDS.Admin.Server.Service
             return await this.DbContext.Trigger.SingleOrDefaultAsync(p => p.Id == key);
         }
 
-        public Task<IDataSourceResponse<TriggerViewModel>> ReadAsync(DataSourceRequest request)
+        public Task<IDataSourceResponse<TriggerViewModel>> ReadAsync(IDataSourceRequest request)
         {
             var responseData = this.DbContext.Trigger.Include("Channel").Select(t => t);
 

@@ -1,15 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using Shengtai.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 
 namespace SymmetricDS.Admin.Master.Service
 {
-    internal static class NodeSecurityService
+    public class NodeSecurityService : Repository<MasterDbContext, AppSettings, ConnectionStrings, IPrincipal>, INodeSecurityService
     {
-        public static bool CheckRegister(ICollection<string> nodeIds, MasterDbContext dbContext)
+        public NodeSecurityService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
         {
-            var count = dbContext.SymNodeSecurity.Count(x => nodeIds.Contains(x.NodeId));
+        }
+
+        public bool CheckRegister(ICollection<string> nodeIds)
+        {
+            var count = this.DbContext.SymNodeSecurity.Count(x => nodeIds.Contains(x.NodeId));
             return count == nodeIds.Count;
         }
     }

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Serilog;
+using SymmetricDS.Admin.ConsoleApp.Service;
 using SymmetricDS.Admin.Master.Service;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
-    class Program
+    internal class Program
     {
         private static bool Run(AppSettings appSettings, IInitializationService initialization, Master.INodeSecurityService nodeSecurityService)
         {
@@ -22,7 +22,7 @@ namespace SymmetricDS.Admin.ConsoleApp
             if (allSuccessful)
             {
                 var nodes = new List<Node>();
-                foreach(var n in appSettings.Nodes)
+                foreach (var n in appSettings.Nodes)
                 {
                     var node = initialization.GetNode(n.Id);
                     if (node == null)
@@ -106,9 +106,9 @@ namespace SymmetricDS.Admin.ConsoleApp
             return allSuccessful;
         }
 
-        static IConfigurationRoot Configuration { get; set; }
+        private static IConfigurationRoot Configuration { get; set; }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var services = new ServiceCollection();
 
@@ -135,15 +135,15 @@ namespace SymmetricDS.Admin.ConsoleApp
                     services.AddEntityFrameworkNpgsql().AddDbContext<Master.MasterDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Scoped);
                     services.AddEntityFrameworkNpgsql().AddDbContext<Server.ServerDbContext>(o => o.UseNpgsql(connectionString), ServiceLifetime.Scoped);
                     services.AddScoped<IInitializationService, NpgsqlInitializationService>();
-                    services.AddScoped<Master.INodeSecurityService, NpgsqlNodeSecurityService>();
                     break;
+
                 case Databases.SQLServer:
                     services.AddEntityFrameworkSqlServer().AddDbContext<Master.MasterDbContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Scoped);
                     services.AddEntityFrameworkSqlServer().AddDbContext<Server.ServerDbContext>(o => o.UseSqlServer(connectionString), ServiceLifetime.Scoped);
                     services.AddScoped<IInitializationService, SqlInitializationService>();
-                    services.AddScoped<Master.INodeSecurityService, SqlNodeSecurityService>();
                     break;
             }
+            services.AddScoped<Master.INodeSecurityService, NodeSecurityService>();
             serviceProvider = services.BuildServiceProvider();
 
             if (appSettings.SymmetricServerPath.Contains(' '))

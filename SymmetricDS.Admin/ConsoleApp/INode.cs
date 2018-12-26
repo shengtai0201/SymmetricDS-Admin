@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SymmetricDS.Admin.ConsoleApp
+﻿namespace SymmetricDS.Admin.ConsoleApp
 {
     public interface INode
     {
@@ -17,6 +11,7 @@ namespace SymmetricDS.Admin.ConsoleApp
         IMaster MasterNode { get; }
 
         bool CopyTo(string path);
+
         bool Write(string path);
 
         void RunOnlyOnce(string path, IInitializationService initialization);

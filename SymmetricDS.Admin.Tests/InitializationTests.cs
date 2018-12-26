@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using SymmetricDS.Admin.ConsoleApp;
-using System;
 using System.IO;
-using System.Threading;
 
 namespace SymmetricDS.Admin.Tests
 {

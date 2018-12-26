@@ -1,10 +1,5 @@
-﻿using Shengtai;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.ConsoleApp
 {
@@ -27,6 +22,7 @@ namespace SymmetricDS.Admin.ConsoleApp
 
         //public string ConnectionString { get; set; }
         public int Version { get; set; }
+
         public int ProjectId { get; set; }
         public string Password { get; set; }
 
@@ -80,10 +76,13 @@ namespace SymmetricDS.Admin.ConsoleApp
             {
                 case Databases.SQLServer:
                     return string.Format("jdbc:jtds:sqlserver://{0}:1433/{1}", dbHost, db);
+
                 case Databases.Oracle:
                     return string.Format("jdbc:oracle:thin:@{0}:1521:{1}", dbHost, db);
+
                 case Databases.PostgreSQL:
                     return string.Format("jdbc:postgresql://{0}:5432/{1}", dbHost, db);
+
                 default:
                     return null;
             }
@@ -95,10 +94,13 @@ namespace SymmetricDS.Admin.ConsoleApp
             {
                 case Databases.SQLServer:
                     return "net.sourceforge.jtds.jdbc.Driver";
+
                 case Databases.Oracle:
                     return "oracle.jdbc.driver.OracleDriver";
+
                 case Databases.PostgreSQL:
                     return "org.postgresql.Driver";
+
                 default:
                     return null;
             }

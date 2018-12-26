@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
+using Shengtai.Data;
 using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.Server;
 using SymmetricDS.Admin.Server.Service;
 using SymmetricDS.Admin.WebApplication.Models;
+using System.Reflection;
+using System.Security.Principal;
 
 namespace SymmetricDS.Admin.WebApplication
 {
@@ -48,13 +46,14 @@ namespace SymmetricDS.Admin.WebApplication
 
             services.AddOptions().Configure<AppSettings>(this.Configuration);
 
-            services.AddScoped<IApiService<int, ProjectViewModel, Project>, ProjectService>().AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();
-            services.AddScoped<IApiService<int, NodeViewModel, Node>, NodeService>().AddScoped<INodeService, NodeService>();
-            services.AddScoped<IApiService<int, ChannelViewModel, Channel>, ChannelService>().AddScoped<IChannelService, ChannelService>();
-            services.AddScoped<IApiService<int, TriggerViewModel, Trigger>, TriggerService>().AddScoped<ITriggerService, TriggerService>();
-            services.AddScoped<IApiService<int, RouterViewModel, Router>, RouterService>();
-            services.AddScoped<IApiService<string, TriggerRouterViewModel, TriggerRouter>, TriggerRouterService>();
+            services.AddScoped<IClient, Shengtai.Data.Core.Client<AppSettings, ConnectionStrings>>();
+            services.AddScoped<IApiService<int, ProjectViewModel, Project, IPrincipal>, ProjectService>().AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup, IPrincipal>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();
+            services.AddScoped<IApiService<int, NodeViewModel, Node, IPrincipal>, NodeService>().AddScoped<INodeService, NodeService>();
+            services.AddScoped<IApiService<int, ChannelViewModel, Channel, IPrincipal>, ChannelService>().AddScoped<IChannelService, ChannelService>();
+            services.AddScoped<IApiService<int, TriggerViewModel, Trigger, IPrincipal>, TriggerService>().AddScoped<ITriggerService, TriggerService>();
+            services.AddScoped<IApiService<int, RouterViewModel, Router, IPrincipal>, RouterService>();
+            services.AddScoped<IApiService<string, TriggerRouterViewModel, TriggerRouter, IPrincipal>, TriggerRouterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

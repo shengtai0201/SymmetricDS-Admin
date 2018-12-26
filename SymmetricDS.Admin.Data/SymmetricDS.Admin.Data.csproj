@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ClassLibrary\ShengtaiCore\ShengtaiCore2x.csproj" />
+    <ProjectReference Include="..\..\Shengtai\Shengtai\Shengtai.csproj" />
   </ItemGroup>
 
 </Project>

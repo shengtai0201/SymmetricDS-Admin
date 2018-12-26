@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SymmetricDS.Admin.Master
+﻿namespace SymmetricDS.Admin.Master
 {
     public partial class SymNodeIdentity
     {

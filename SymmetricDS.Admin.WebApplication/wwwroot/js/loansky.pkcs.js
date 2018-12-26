@@ -38,7 +38,6 @@ loansky.pkcs = new function () {
     function getImageInfo(ctx) {
         var output = "";
         for (i = 0; i < 2000; i++) {
-
             var data = ctx.getImageData(i, 0, 1, 1).data;
             if (data[2] === 0)
                 break;

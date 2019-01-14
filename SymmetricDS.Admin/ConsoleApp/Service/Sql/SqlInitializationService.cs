@@ -7,8 +7,7 @@ namespace SymmetricDS.Admin.ConsoleApp.Service
 {
     public class SqlInitializationService : InitializationService
     {
-        public SqlInitializationService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client,
-            Server.IInitializationService serverInitializationService) : base(options, dbContext, client, serverInitializationService)
+        public SqlInitializationService(Server.IInitializationService serverInitializationService) : base(serverInitializationService)
         {
         }
 

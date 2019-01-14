@@ -17,10 +17,9 @@ namespace SymmetricDS.Admin.ConsoleApp.Service
         private readonly Databases database;
         private readonly Server.IInitializationService serverInitializationService;
 
-        protected InitializationService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client,
-            Server.IInitializationService serverInitializationService) : base(options.Value, dbContext, client)
+        protected InitializationService(Server.IInitializationService serverInitializationService) : base()
         {
-            this.database = options.Value.Database;
+            this.database = this.AppSettings.Database;
             this.serverInitializationService = serverInitializationService;
         }
 

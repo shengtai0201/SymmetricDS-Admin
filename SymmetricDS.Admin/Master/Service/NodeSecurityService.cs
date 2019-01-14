@@ -8,9 +8,7 @@ namespace SymmetricDS.Admin.Master.Service
 {
     public class NodeSecurityService : Repository<MasterDbContext, AppSettings, ConnectionStrings, IPrincipal>, INodeSecurityService
     {
-        public NodeSecurityService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
-        {
-        }
+        public NodeSecurityService() : base() { }
 
         public bool CheckRegister(ICollection<string> nodeIds)
         {

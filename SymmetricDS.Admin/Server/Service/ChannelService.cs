@@ -16,9 +16,7 @@ namespace SymmetricDS.Admin.Server.Service
     public class ChannelService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, ChannelViewModel, Channel, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IChannelService
     {
-        public ChannelService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
-        {
-        }
+        public ChannelService() : base() { }
 
         public async Task<bool> CreateAsync(ChannelViewModel model, IDataSource dataSource)
         {

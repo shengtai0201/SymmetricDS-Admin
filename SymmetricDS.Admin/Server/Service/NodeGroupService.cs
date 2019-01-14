@@ -16,9 +16,7 @@ namespace SymmetricDS.Admin.Server.Service
     public class NodeGroupService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, NodeGroupViewModel, NodeGroup, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, INodeGroupService
     {
-        public NodeGroupService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
-        {
-        }
+        public NodeGroupService() : base() { }
 
         public async Task<bool> CreateAsync(NodeGroupViewModel model, IDataSource dataSource)
         {

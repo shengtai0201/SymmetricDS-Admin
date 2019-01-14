@@ -18,7 +18,7 @@ namespace SymmetricDS.Admin.Server.Service
     {
         private readonly ILogger<RouterService> logger;
 
-        public RouterService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client, ILogger<RouterService> logger) : base(options.Value, dbContext, client)
+        public RouterService(ILogger<RouterService> logger) : base()
         {
             this.logger = logger;
         }

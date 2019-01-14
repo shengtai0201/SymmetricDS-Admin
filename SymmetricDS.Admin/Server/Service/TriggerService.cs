@@ -16,9 +16,7 @@ namespace SymmetricDS.Admin.Server.Service
     public class TriggerService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, TriggerViewModel, Trigger, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, ITriggerService
     {
-        public TriggerService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
-        {
-        }
+        public TriggerService() : base() { }
 
         public async Task<bool> CreateAsync(TriggerViewModel model, IDataSource dataSource)
         {

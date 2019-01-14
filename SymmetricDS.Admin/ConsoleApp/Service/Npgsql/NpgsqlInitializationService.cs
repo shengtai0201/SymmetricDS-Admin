@@ -7,8 +7,7 @@ namespace SymmetricDS.Admin.ConsoleApp.Service
 {
     public class NpgsqlInitializationService : InitializationService
     {
-        public NpgsqlInitializationService(IOptions<AppSettings> options, MasterDbContext dbContext, IClient client,
-            Server.IInitializationService serverInitializationService) : base(options, dbContext, client, serverInitializationService)
+        public NpgsqlInitializationService(Server.IInitializationService serverInitializationService) : base(serverInitializationService)
         {
         }
 

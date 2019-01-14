@@ -17,9 +17,9 @@ namespace SymmetricDS.Admin.Server.Service
     public class ProjectService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, ProjectViewModel, Project, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IProjectService
     {
-        private readonly ILogger<NodeService> logger;
+        private readonly ILogger<ProjectService> logger;
 
-        public ProjectService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client, ILogger<NodeService> logger) : base(options.Value, dbContext, client)
+        public ProjectService(ILogger<ProjectService> logger) : base()
         {
             this.logger = logger;
         }

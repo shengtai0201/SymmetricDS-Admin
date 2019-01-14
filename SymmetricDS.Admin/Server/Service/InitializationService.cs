@@ -9,9 +9,7 @@ namespace SymmetricDS.Admin.Server.Service
 {
     public class InitializationService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IInitializationService
     {
-        public InitializationService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client) : base(options.Value, dbContext, client)
-        {
-        }
+        public InitializationService() : base() { }
 
         public IDictionary<string, Channel> GetNewChannels()
         {

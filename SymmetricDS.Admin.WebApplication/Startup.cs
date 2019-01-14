@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CommonServiceLocator;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,8 +46,8 @@ namespace SymmetricDS.Admin.WebApplication
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddOptions().Configure<AppSettings>(this.Configuration);
-
             services.AddScoped<IClient, Shengtai.Data.Core.Client<AppSettings, ConnectionStrings>>();
+
             services.AddScoped<IApiService<int, ProjectViewModel, Project, IPrincipal>, ProjectService>().AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup, IPrincipal>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();
             services.AddScoped<IApiService<int, NodeViewModel, Node, IPrincipal>, NodeService>().AddScoped<INodeService, NodeService>();
@@ -54,6 +55,8 @@ namespace SymmetricDS.Admin.WebApplication
             services.AddScoped<IApiService<int, TriggerViewModel, Trigger, IPrincipal>, TriggerService>().AddScoped<ITriggerService, TriggerService>();
             services.AddScoped<IApiService<int, RouterViewModel, Router, IPrincipal>, RouterService>();
             services.AddScoped<IApiService<string, TriggerRouterViewModel, TriggerRouter, IPrincipal>, TriggerRouterService>();
+
+            ServiceLocator.SetLocatorProvider(() => new Shengtai.ServiceLocator(services.BuildServiceProvider()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

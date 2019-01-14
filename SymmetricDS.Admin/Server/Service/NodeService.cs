@@ -19,7 +19,7 @@ namespace SymmetricDS.Admin.Server.Service
     {
         private readonly ILogger<NodeService> logger;
 
-        public NodeService(IOptions<AppSettings> options, ServerDbContext dbContext, IClient client, ILogger<NodeService> logger) : base(options.Value, dbContext, client)
+        public NodeService(ILogger<NodeService> logger) : base()
         {
             this.logger = logger;
         }

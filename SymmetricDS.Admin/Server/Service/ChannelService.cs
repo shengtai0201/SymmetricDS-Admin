@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
-using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +14,9 @@ namespace SymmetricDS.Admin.Server.Service
     public class ChannelService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, ChannelViewModel, Channel, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IChannelService
     {
-        public ChannelService() : base() { }
+        public ChannelService() : base()
+        {
+        }
 
         public async Task<bool> CreateAsync(ChannelViewModel model, IDataSource dataSource)
         {

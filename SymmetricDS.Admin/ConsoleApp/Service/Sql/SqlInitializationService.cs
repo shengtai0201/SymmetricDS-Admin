@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Shengtai.Data;
-using SymmetricDS.Admin.Master;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
 namespace SymmetricDS.Admin.ConsoleApp.Service
 {

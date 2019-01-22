@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,9 @@ namespace SymmetricDS.Admin.Server.Service
 {
     public class InitializationService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IInitializationService
     {
-        public InitializationService() : base() { }
+        public InitializationService() : base()
+        {
+        }
 
         public IDictionary<string, Channel> GetNewChannels()
         {

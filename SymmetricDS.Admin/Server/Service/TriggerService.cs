@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
-using Shengtai.Web.Telerik.Mvc;
 using SymmetricDS.Admin.WebApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +14,9 @@ namespace SymmetricDS.Admin.Server.Service
     public class TriggerService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
         IApiService<int, TriggerViewModel, Trigger, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, ITriggerService
     {
-        public TriggerService() : base() { }
+        public TriggerService() : base()
+        {
+        }
 
         public async Task<bool> CreateAsync(TriggerViewModel model, IDataSource dataSource)
         {

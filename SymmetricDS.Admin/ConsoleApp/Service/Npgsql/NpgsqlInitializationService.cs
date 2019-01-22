@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Npgsql;
-using Shengtai.Data;
-using SymmetricDS.Admin.Master;
+﻿using Npgsql;
 
 namespace SymmetricDS.Admin.ConsoleApp.Service
 {

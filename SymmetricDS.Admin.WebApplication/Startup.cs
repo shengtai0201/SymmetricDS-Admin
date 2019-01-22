@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Shengtai.Data;
-using Shengtai.Web.Telerik.Mvc;
+using Shengtai.Web.Telerik;
 using SymmetricDS.Admin.Server;
 using SymmetricDS.Admin.Server.Service;
 using SymmetricDS.Admin.WebApplication.Models;

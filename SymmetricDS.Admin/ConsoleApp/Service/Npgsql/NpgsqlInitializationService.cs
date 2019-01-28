@@ -17,7 +17,7 @@ namespace SymmetricDS.Admin.ConsoleApp.Service
 	                table_schema = 'public'
 	                AND table_type = 'BASE TABLE'
 	                AND TABLE_NAME LIKE'sym_%'";
-            var result = this.ExecuteScalar<NpgsqlConnection, NpgsqlCommand, NpgsqlParameter, int>(cmdText);
+            var result = this.ExecuteScalar<NpgsqlConnection, NpgsqlCommand, NpgsqlParameter, int>(cmdText, this.AppSettings.ConnectionStrings.DefaultConnection);
 
             return result == 47;
         }

@@ -46,7 +46,7 @@ namespace SymmetricDS.Admin.WebApplication
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddOptions().Configure<AppSettings>(this.Configuration);
-            services.AddScoped<IClient<AppSettings, ConnectionStrings>, Shengtai.Data.Core.Client<AppSettings, ConnectionStrings>>();
+            services.AddScoped<IClient, Shengtai.Data.Client>();
 
             services.AddScoped<IApiService<int, ProjectViewModel, Project, IPrincipal>, ProjectService>().AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IApiService<int, NodeGroupViewModel, NodeGroup, IPrincipal>, NodeGroupService>().AddScoped<INodeGroupService, NodeGroupService>();

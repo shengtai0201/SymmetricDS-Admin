@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
@@ -11,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class ChannelService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+    public class ChannelService : Shengtai.Data.Core.Repository<ServerDbContext, AppSettings, ConnectionStrings>,
         IApiService<int, ChannelViewModel, Channel, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IChannelService
     {
-        public ChannelService() : base()
+        public ChannelService(IOptions<AppSettings> options) : base(options)
         {
         }
 

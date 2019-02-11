@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Security.Principal;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class InitializationService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, IInitializationService
+    public class InitializationService : Shengtai.Data.Core.Repository<ServerDbContext, AppSettings, ConnectionStrings>, IInitializationService
     {
-        public InitializationService() : base()
+        public InitializationService(IOptions<AppSettings> options) : base(options)
         {
         }
 

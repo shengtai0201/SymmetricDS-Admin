@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class TriggerRouterService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+    public class TriggerRouterService : Shengtai.Data.Core.Repository<ServerDbContext, AppSettings, ConnectionStrings>,
         IApiService<string, TriggerRouterViewModel, TriggerRouter, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>
     {
         private readonly ILogger<TriggerRouterService> logger;
 
-        public TriggerRouterService(ILogger<TriggerRouterService> logger) : base()
+        public TriggerRouterService(IOptions<AppSettings> options, ILogger<TriggerRouterService> logger) : base(options)
         {
             this.logger = logger;
         }

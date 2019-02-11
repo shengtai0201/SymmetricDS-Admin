@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
@@ -11,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class TriggerService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+    public class TriggerService : Shengtai.Data.Core.Repository<ServerDbContext, AppSettings, ConnectionStrings>,
         IApiService<int, TriggerViewModel, Trigger, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, ITriggerService
     {
-        public TriggerService() : base()
+        public TriggerService(IOptions<AppSettings> options) : base(options)
         {
         }
 

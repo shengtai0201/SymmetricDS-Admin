@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shengtai.Data;
 using Shengtai.Web;
 using Shengtai.Web.Telerik;
@@ -11,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace SymmetricDS.Admin.Server.Service
 {
-    public class NodeGroupService : Repository<ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>,
+    public class NodeGroupService : Shengtai.Data.Core.Repository<ServerDbContext, AppSettings, ConnectionStrings>,
         IApiService<int, NodeGroupViewModel, NodeGroup, ServerDbContext, AppSettings, ConnectionStrings, IPrincipal>, INodeGroupService
     {
-        public NodeGroupService() : base()
+        public NodeGroupService(IOptions<AppSettings> options) : base(options)
         {
         }
 
